@@ -6,6 +6,7 @@ package tads;
 import tads.NodoSE;
 
 import dominio.Bicicleta;
+import dominio.EstadoBicicleta;
 
 /**
  *
@@ -14,6 +15,7 @@ import dominio.Bicicleta;
 
 public class ListaBicicletas {
     private ListaSE<Bicicleta> bicicletas;
+    private NodoSE<Bicicleta> primero;
 
     public ListaBicicletas() {
         bicicletas = new ListaSE<>();
@@ -93,6 +95,18 @@ public class ListaBicicletas {
     public ListaSE<Bicicleta> getLista() {
         return bicicletas;
     }
+    
+    public Bicicleta buscarDisponible() {
+    NodoSE<Bicicleta> aux = primero;
+    while (aux != null) {
+        if (aux.getDato().getEstado() == EstadoBicicleta.Disponible) {
+            return aux.getDato();
+        }
+        aux = aux.getSiguiente();
+    }
+    return null;
+}
+
 }
 
 
