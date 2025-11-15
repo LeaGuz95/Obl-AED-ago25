@@ -22,6 +22,7 @@ public class Estacion implements Comparable<Estacion> {
         this.barrio = barrio;
         this.capacidad = capacidad;
         this.anclajes = new ListaBicicletas(); 
+        this.esperaAlquiler = new ColaSE<>();
     }
 
     public boolean hayLugar() {
@@ -68,5 +69,7 @@ public class Estacion implements Comparable<Estacion> {
     public String getBarrio() { return barrio; }
     public int getCapacidad() { return capacidad; }
     public ListaBicicletas getAnclajes() { return anclajes; }
+    public ColaSE<Usuario> getEsperaAlquiler() {return esperaAlquiler;}
+
 }
 

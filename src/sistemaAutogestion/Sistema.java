@@ -6,6 +6,7 @@ import dominio.TipoBicicleta;
 import dominio.Usuario;
 import tads.ListaBicicletas;
 import tads.ListaEstaciones;
+import tads.ListaSE;
 import tads.ListaUsuarios;
 import tads.MatrizEstaciones;
 
@@ -24,7 +25,9 @@ public class Sistema implements IObligatorio {
     public ListaBicicletas getDeposito() {
     return deposito;
     }
-    
+    public ListaEstaciones getEstaciones() {
+    return estaciones;
+    }
     //2.1. Crear Sistema de Gestión--------------------------------------
   @Override
     public Retorno crearSistemaDeGestion() {
@@ -166,16 +169,110 @@ public class Sistema implements IObligatorio {
         return Retorno.ok();
     }
 
-
-    @Override
+//2.7. Eliminar bicicleta----------------------------------------------------
+   @Override
     public Retorno eliminarEstacion(String nombre) {
-        return Retorno.noImplementada();
+
+        // 1) Validación de nombre
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return Retorno.error1(); // Nombre inválido
+        }
+
+        Estacion est = estaciones.buscar(nombre);
+        if (est == null) {
+            return Retorno.error2(); // Estación inexistente
+        }
+
+        // 2) No debe tener bicicletas ancladas
+        if (est.getAnclajes().contar() > 0) {
+            return Retorno.error3(); // Tiene bicicletas ancladas
+        }
+
+        // 3) No debe tener usuarios en cola de espera
+        if (est.getEsperaAlquiler() != null && !est.getEsperaAlquiler().estaVacia()) {
+            return Retorno.error3(); // También ERROR_3 según letra
+        }
+
+        // 4) Eliminar estación de la lista
+        ListaSE<Estacion> lista = estaciones.getLista();
+
+        for (int i = 0; i < lista.longitud(); i++) {
+            try {
+                if (lista.obtener(i).getNombre().equalsIgnoreCase(nombre)) {
+                    lista.eliminar(i);
+                    return Retorno.ok();
+                }
+            } catch (Exception e) {
+                // ignorar, tu ListaSE lanza excepciones por índice
+            }
+        }
+
+        // fallback improbable
+        return Retorno.error2();
     }
 
+
+//2.8. Asignar bicicleta a estación ----------------------------------------------------
     @Override
     public Retorno asignarBicicletaAEstacion(String codigo, String nombreEstacion) {
-        return Retorno.noImplementada();
+
+        // ERROR 1: parámetros inválidos
+        if (codigo == null || codigo.isEmpty() ||
+            nombreEstacion == null || nombreEstacion.isEmpty()) {
+            return Retorno.error1();
+        }
+
+        // Buscar bicicleta
+        Bicicleta bici = deposito.buscar(codigo);
+        Estacion estacionActual = null;
+
+        // Si no está en el depósito, buscar en estaciones
+        if (bici == null) {
+            ListaSE<Estacion> lista = estaciones.getLista();
+            for (int i = 0; i < lista.longitud(); i++) {
+                try {
+                    Estacion e = lista.obtener(i);
+                    if (e.buscarBicicleta(codigo) != null) {
+                        estacionActual = e;
+                        bici = e.buscarBicicleta(codigo);
+                        break;
+                    }
+                } catch (Exception ex) { }
+            }
+        }
+
+        // ERROR 2: bici no existe o no está disponible
+        if (bici == null || bici.getEstado() != EstadoBicicleta.Disponible) {
+            return Retorno.error2();
+        }
+
+        // Buscar estación destino
+        Estacion destino = estaciones.buscar(nombreEstacion);
+
+        // ERROR 3: estación no existe
+        if (destino == null) {
+            return Retorno.error3();
+        }
+
+        // ERROR 4: sin espacio
+        if (!destino.hayLugar()) {
+            return Retorno.error4();
+        }
+
+        // Si la bici está en otra estación → removerla de allí
+        if (estacionActual != null) {
+            estacionActual.sacarBicicleta(codigo);
+        } else {
+            // Si estaba en depósito → sacarla del depósito
+            deposito.sacar(codigo);
+        }
+
+        // Finalmente anclar en estación destino
+        destino.anclarBicicleta(bici);
+
+        return Retorno.ok();
     }
+
 
     @Override
     public Retorno alquilarBicicleta(String cedula, String nombreEstacion) {
