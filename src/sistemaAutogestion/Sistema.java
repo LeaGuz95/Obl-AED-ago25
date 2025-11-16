@@ -102,6 +102,7 @@ public class Sistema implements IObligatorio {
         }
 
         Bicicleta nueva = new Bicicleta(codigo, tipoEnum);
+        nueva.setEstado(EstadoBicicleta.Disponible); 
         deposito.agregar(nueva);
 
         return Retorno.ok();
@@ -273,10 +274,42 @@ public class Sistema implements IObligatorio {
         return Retorno.ok();
     }
 
-
+//2.9. Alquilar bicicleta ------
     @Override
     public Retorno alquilarBicicleta(String cedula, String nombreEstacion) {
-        return Retorno.noImplementada();
+
+        // ERROR 1: parámetros inválidos
+        if (cedula == null || cedula.isEmpty() ||
+            nombreEstacion == null || nombreEstacion.isEmpty()) {
+            return Retorno.error1();
+        }
+
+        // Buscar usuario
+        Usuario u = usuarios.buscar(cedula);
+        if (u == null) {
+            return Retorno.error2();
+        }
+
+        // Buscar estación
+        Estacion est = estaciones.buscar(nombreEstacion);
+        if (est == null) {
+            return Retorno.error3();
+        }
+
+        // 1) Buscar bicicleta disponible en la estación
+        Bicicleta disponible = est.getAnclajes().buscarDisponible();
+
+        if (disponible != null) {
+            // Hay una → asignar directo
+            est.getAnclajes().sacar(disponible.getCodigo());
+            disponible.setEstado(EstadoBicicleta.Alquilada);
+            u.setBicicletaActual(disponible);
+            return Retorno.ok();
+        }
+
+        // 2) Si no hay bicicletas → usuario entra a la cola
+        est.getEsperaAlquiler().encolar(u);
+        return Retorno.ok();
     }
 
     @Override

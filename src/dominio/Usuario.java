@@ -12,7 +12,7 @@ public class Usuario implements Comparable<Usuario> {
     private String cedula;
     private String nombre;
     private int cantidadAlquileres;
-
+    private Bicicleta bicicletaActual; 
 
     public Usuario(String cedula, String nombre) {
         this.cedula = cedula;
@@ -21,7 +21,13 @@ public class Usuario implements Comparable<Usuario> {
 
     public String getCedula() { return cedula; }
     public String getNombre() { return nombre; }
+    public Bicicleta getBicicletaActual() {
+    return bicicletaActual;
+}
 
+public void setBicicletaActual(Bicicleta bicicletaActual) {
+    this.bicicletaActual = bicicletaActual;
+}
     @Override
     public int compareTo(Usuario otro) {
  
