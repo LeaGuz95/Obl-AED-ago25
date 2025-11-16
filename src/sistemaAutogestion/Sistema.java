@@ -2,6 +2,7 @@ package sistemaAutogestion;
 import dominio.Bicicleta;
 import dominio.Estacion;
 import dominio.EstadoBicicleta;
+import dominio.Retiro;
 import dominio.TipoBicicleta;
 import dominio.Usuario;
 import tads.ListaBicicletas;
@@ -9,6 +10,7 @@ import tads.ListaEstaciones;
 import tads.ListaSE;
 import tads.ListaUsuarios;
 import tads.MatrizEstaciones;
+import tads.PilaRetiros;
 
 //version original comentario para saber si publique en git
 //Agregar aquí nombres y números de estudiante de los integrantes del equipo
@@ -19,7 +21,7 @@ public class Sistema implements IObligatorio {
     private ListaUsuarios usuarios;
     private ListaEstaciones estaciones;
     private ListaBicicletas deposito;
-
+    private PilaRetiros historialRetiros;
     
   
     public ListaBicicletas getDeposito() {
@@ -34,7 +36,8 @@ public class Sistema implements IObligatorio {
         usuarios = new ListaUsuarios();
         estaciones = new ListaEstaciones();
         deposito = new ListaBicicletas();
-     
+        historialRetiros = new PilaRetiros();  // inicializar la pila
+    
        return Retorno.ok();
     }
     
@@ -311,16 +314,85 @@ public class Sistema implements IObligatorio {
         est.getEsperaAlquiler().encolar(u);
         return Retorno.ok();
     }
-
+//2.10. Devolver bicicleta -----------------------------------
     @Override
     public Retorno devolverBicicleta(String cedula, String nombreEstacionDestino) {
-        return Retorno.noImplementada();
+        // ERROR 1: parámetros inválidos
+        if (cedula == null || cedula.isEmpty() ||
+            nombreEstacionDestino == null || nombreEstacionDestino.isEmpty()) {
+            return Retorno.error1();
+        }
+
+        // Buscar usuario
+        Usuario u = usuarios.buscar(cedula);
+        if (u == null || u.getBicicletaActual() == null) {
+            return Retorno.error2();
+        }
+
+        // Buscar estación destino
+        Estacion destino = estaciones.buscar(nombreEstacionDestino);
+        if (destino == null) {
+            return Retorno.error3();
+        }
+
+        Bicicleta bici = u.getBicicletaActual();
+
+        // Si hay lugar en la estación → anclar la bici
+        if (destino.hayLugar()) {
+            destino.anclarBicicleta(bici);
+            bici.setEstado(EstadoBicicleta.Disponible);
+            u.setBicicletaActual(null);
+
+            // Si hay usuarios esperando en la estación, entregar bici automáticamente
+            if (!destino.getEsperaAlquiler().estaVacia()) {
+                Usuario primerUsuario = destino.getEsperaAlquiler().desencolar();
+                primerUsuario.setBicicletaActual(destino.getAnclajes().buscarDisponible());
+                // Sacar bici del anclaje y marcar como alquilada
+                destino.getAnclajes().sacar(primerUsuario.getBicicletaActual().getCodigo());
+                primerUsuario.getBicicletaActual().setEstado(EstadoBicicleta.Alquilada);
+            }
+
+            return Retorno.ok();
+        } else {
+            // Si no hay lugar → poner usuario en espera de anclaje
+            destino.getEsperaAnclaje().encolar(u);
+            return Retorno.ok();
+        }
     }
 
-    @Override
+//2.11. deshacerUltimosRetiros -----------------------------------
+   @Override
     public Retorno deshacerUltimosRetiros(int n) {
-        return Retorno.noImplementada();
+        if (n <= 0) return Retorno.error1();
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < n; i++) {
+            if (historialRetiros.estaVacia()) break;
+
+            Retiro r = historialRetiros.desapilar();
+            Bicicleta bici = r.getBicicleta();
+            Usuario u = r.getUsuario();
+            Estacion est = r.getEstacionOrigen();
+
+            // devolver bici a la estación de origen
+            if (est.hayLugar()) {
+                est.anclarBicicleta(bici);
+            } else {
+                // si no hay lugar, el usuario (en este caso la bici) queda en cola de anclaje
+                // podés crear una ColaSE<Bicicleta> en la estación si querés simular la espera
+            }
+
+            // revertir alquiler del usuario
+            u.setBicicletaActual(null);
+
+            if (sb.length() > 0) sb.append("|");
+            sb.append(r.toString());
+        }
+
+        return Retorno.ok(sb.toString());
     }
+
     
     //3.1.Obtener Usuario------------------------------------------------------
    @Override
