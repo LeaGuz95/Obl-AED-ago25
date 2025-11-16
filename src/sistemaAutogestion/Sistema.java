@@ -10,6 +10,7 @@ import tads.ListaEstaciones;
 import tads.ListaSE;
 import tads.ListaUsuarios;
 import tads.MatrizEstaciones;
+import tads.NodoSE;
 import tads.PilaRetiros;
 
 //version original comentario para saber si publique en git
@@ -490,11 +491,35 @@ public class Sistema implements IObligatorio {
 
 
 
-
+//3.5. Listar bicis de estación------------------------
     @Override
     public Retorno listarBicicletasDeEstacion(String nombreEstacion) {
-        return Retorno.noImplementada();
+        // ERROR 1: parámetro inválido
+        if (nombreEstacion == null || nombreEstacion.isEmpty()) {
+            return Retorno.error1();
+        }
+
+        // Buscar estación
+        Estacion est = estaciones.buscar(nombreEstacion);
+        if (est == null) {
+            return Retorno.error3(); // si querés usar error3 para "no existe"
+        }
+
+        // Lista de bicicletas de la estación
+        ListaBicicletas anclajes = est.getAnclajes();
+
+        // Recorrer la lista y armar el string
+        StringBuilder sb = new StringBuilder();
+        NodoSE<Bicicleta> aux = anclajes.getPrimero();
+        while (aux != null) {
+            if (sb.length() > 0) sb.append("|");
+            sb.append(aux.getDato().getCodigo());
+            aux = aux.getSiguiente();
+        }
+
+        return Retorno.ok(sb.toString());
     }
+
 
     @Override
     public Retorno estacionesConDisponibilidad(int n) {
