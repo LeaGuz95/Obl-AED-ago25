@@ -535,7 +535,7 @@ public class Sistema implements IObligatorio {
         return Retorno.ok(sb.toString());
     }
 
-
+//3.6. Estaciones con disponibilidad mayor ------------------------
    @Override
     public Retorno estacionesConDisponibilidad(int n) {
         if (n <= 1)
@@ -556,10 +556,48 @@ public class Sistema implements IObligatorio {
     }
 
 
-    @Override
+   @Override
     public Retorno ocupacionPromedioXBarrio() {
-        return Retorno.noImplementada();
+        if (estaciones.vacia()) {
+            return Retorno.error1(); // o Retorno.error() genérico según convenga
+        }
+
+        // Mapa barrio -> [bicis ancladas, capacidad total]
+        Map<String, int[]> barrioMap = new TreeMap<>(); // TreeMap ordena por clave (barrio) alfabéticamente
+
+        for (int i = 0; i < estaciones.longitud(); i++) {
+            try {
+                Estacion e = estaciones.obtener(i);
+                String barrio = e.getBarrio();
+                int ancladas = e.getAnclajes().contar();
+                int capacidad = e.getCapacidad();
+
+                barrioMap.putIfAbsent(barrio, new int[]{0, 0});
+                int[] datos = barrioMap.get(barrio);
+                datos[0] += ancladas;
+                datos[1] += capacidad;
+            } catch (Exception ex) {
+                // ignorar
+            }
+        }
+
+        // Armar string salida: barrio1#porcentaje|barrio2#porcentaje
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, int[]> entry : barrioMap.entrySet()) {
+            String barrio = entry.getKey();
+            int[] datos = entry.getValue();
+            int porcentaje = 0;
+            if (datos[1] > 0) {
+                porcentaje = (int) Math.round((double) datos[0] * 100 / datos[1]);
+            }
+
+            if (sb.length() > 0) sb.append("|");
+            sb.append(barrio).append("#").append(porcentaje);
+        }
+
+        return Retorno.ok(sb.toString());
     }
+
 
     @Override
     public Retorno rankingTiposPorUso() {

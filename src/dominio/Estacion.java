@@ -58,6 +58,9 @@ public class Estacion implements Comparable<Estacion> {
         }
         return null;
     }
+    
+
+
 
     @Override
     public int compareTo(Estacion otra) {
@@ -77,8 +80,11 @@ public class Estacion implements Comparable<Estacion> {
     public ColaSE<Usuario> getEsperaAlquiler() {return esperaAlquiler;}
     public ColaSE<Usuario> getEsperaAnclaje() {return esperaAnclaje;}
     public ColaSE<Bicicleta> getEsperaAnclajeBici() {return esperaAnclajeBicis;}
-    
-    
+
+   
+        public int cantidadDisponibles() {
+    return anclajes.cantidadDisponibles();
+}
     
 }
 

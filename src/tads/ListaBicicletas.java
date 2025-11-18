@@ -94,6 +94,21 @@ public class ListaBicicletas {
         return null;
     }
 
+    public int cantidadDisponibles() {
+    int c = 0;
+    NodoSE<Bicicleta> act = this.getLista().getInicio(); // o getInicio(), según tu implementación
+
+    while (act != null) {
+        Bicicleta b = act.getDato();
+        if (b.getEstado() == EstadoBicicleta.Disponible)
+            c++;
+        act = act.getSiguiente();
+    }
+
+    return c;
+}
+
+    
     public ListaSE<Bicicleta> getLista() {
         return bicicletas;
     }
