@@ -63,6 +63,29 @@ public class PilaSE<T> {
         }
         return elementos;
     }
+    
+    public int longitud() {
+    int count = 0;
+    NodoSE<T> aux = tope;
+    while (aux != null) {
+        count++;
+        aux = aux.getSiguiente();
+    }
+    return count;
+}
+
+    public void vaciar() {
+    tope = null;
+}
+    
+    public void recorrer(java.util.function.Consumer<T> action) {
+    NodoSE<T> aux = tope;
+    while (aux != null) {
+        action.accept(aux.getDato());
+        aux = aux.getSiguiente();
+    }
+}
+
 
 }
 
