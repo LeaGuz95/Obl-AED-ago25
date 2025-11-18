@@ -15,7 +15,8 @@ public class Estacion implements Comparable<Estacion> {
     private int capacidad;           
     private ListaBicicletas anclajes; 
     private ColaSE<Usuario> esperaAlquiler;
-    private ColaSE<Bicicleta> esperaAnclaje;
+    private ColaSE<Usuario> esperaAnclaje;
+    private ColaSE<Bicicleta> esperaAnclajeBicis;
     
 
     public Estacion(String nombre, String barrio, int capacidad) {
@@ -25,6 +26,8 @@ public class Estacion implements Comparable<Estacion> {
         this.anclajes = new ListaBicicletas(); 
         this.esperaAlquiler = new ColaSE<>();
         this.esperaAnclaje = new ColaSE<>();
+        this.esperaAnclajeBicis = new ColaSE<>();
+        
     }
 
     public boolean hayLugar() {
@@ -72,6 +75,10 @@ public class Estacion implements Comparable<Estacion> {
     public int getCapacidad() { return capacidad; }
     public ListaBicicletas getAnclajes() { return anclajes; }
     public ColaSE<Usuario> getEsperaAlquiler() {return esperaAlquiler;}
-    public ColaSE<Bicicleta> getEsperaAnclaje() {return esperaAnclaje;}
+    public ColaSE<Usuario> getEsperaAnclaje() {return esperaAnclaje;}
+    public ColaSE<Bicicleta> getEsperaAnclajeBici() {return esperaAnclajeBicis;}
+    
+    
+    
 }
 

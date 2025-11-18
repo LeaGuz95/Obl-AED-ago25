@@ -388,7 +388,7 @@ public class Sistema implements IObligatorio {
             if (origen.hayLugar()) {
                 origen.getAnclajes().insertarOrdenado(bici);// <<--- CORRECTO
             } else {
-                origen.getEsperaAnclaje().encolar(bici);   // <<--- CORRECCIÓN CLAVE
+                origen.getEsperaAnclajeBici().encolar(bici);   // <<--- CORRECCIÓN CLAVE
             }
 
             // revertir alquiler
@@ -536,10 +536,25 @@ public class Sistema implements IObligatorio {
     }
 
 
-    @Override
+   @Override
     public Retorno estacionesConDisponibilidad(int n) {
-        return Retorno.noImplementada();
+        if (n <= 1)
+            return Retorno.error1();
+
+        int contador = 0;
+        NodoSE<Estacion> act = estaciones.getPrimero();
+
+        while (act != null) {
+            Estacion e = act.getDato();
+            if (e.cantidadDisponibles() > n)
+                contador++;
+
+            act = act.getSiguiente();
+        }
+
+        return Retorno.ok(contador);
     }
+
 
     @Override
     public Retorno ocupacionPromedioXBarrio() {
