@@ -15,7 +15,7 @@ public class MatrizEstaciones {
     private String[][] mapa;
 
     public MatrizEstaciones(String[][] mapa) {
-        this.mapa = mapa; // no lanzamos excepción, puede ser null o vacío
+        this.mapa = mapa;
     }
 
     public boolean esValido() {

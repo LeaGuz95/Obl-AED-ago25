@@ -4,6 +4,9 @@
  */
 package tads;
 
+import tads.Exceptions.ColaVaciaException;
+import tads.Exceptions.DatoInvalidoException;
+
 
 /**
  *
@@ -19,7 +22,7 @@ public class ColaSE<T> {
     }
 
     public void encolar(T dato) {
-        if (dato == null) return;
+        if (dato == null) throw new DatoInvalidoException();
         NodoSE<T> nuevo = new NodoSE<>(dato);
         if (fondo == null) {
             frente = fondo = nuevo;
@@ -36,17 +39,57 @@ public class ColaSE<T> {
         if (frente == null) fondo = null;
         return dato;
     }
+    
+    public int longitud() {
+    int count = 0;
+    NodoSE<T> aux = frente;
+    while (aux != null) {
+        count++;
+        aux = aux.getSiguiente();
+    }
+    return count;
+}
+    
+public T verPrimero() {
+    if (estaVacia()) throw new ColaVaciaException();
+    return frente.getDato();
+}
+
+public void vaciar() {
+    frente = null;
+    fondo = null;
+}
+
+
+public ListaSE<T> obtenerElementos() {
+    ListaSE<T> elementos = new ListaSE<>();
+    NodoSE<T> aux = frente;
+    while (aux != null) {
+        elementos.adicionar(aux.getDato());
+        aux = aux.getSiguiente();
+    }
+    return elementos;
+}
+
+public void recorrer(java.util.function.Consumer<T> action) {
+    NodoSE<T> aux = frente;
+    while (aux != null) {
+        action.accept(aux.getDato());
+        aux = aux.getSiguiente();
+    }
+}
+
 
     public boolean estaVacia() {
         return frente == null;
     }
 
-    // 🔹 Devuelve el nodo frontal para recorrerlo en la GUI
+
     public NodoSE<T> getFrente() {
         return frente;
     }
 
-    // Devuelve el nodo fondo si necesitás recorrerlo
+
     public NodoSE<T> getFondo() {
         return fondo;
     }

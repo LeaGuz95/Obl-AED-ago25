@@ -38,12 +38,12 @@ public class NodoSE<T> {
         this.siguiente = siguiente;
     }
 
-    // Limpia y cómoda: no rompe nada
+   
     public boolean hasNext() {
         return this.siguiente != null;
     }
 
-    // Útil para debug
+   
     @Override
     public String toString() {
         return dato != null ? dato.toString() : "null";

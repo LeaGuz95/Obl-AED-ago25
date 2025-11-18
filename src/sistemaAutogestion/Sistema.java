@@ -363,36 +363,51 @@ public class Sistema implements IObligatorio {
 
 //2.11. deshacerUltimosRetiros -----------------------------------
    @Override
+   
     public Retorno deshacerUltimosRetiros(int n) {
-        if (n <= 0) return Retorno.error1();
+        if (n <= 0)
+            return Retorno.error1();
+
+        if (historialRetiros.estaVacia())
+            return Retorno.error2();  // si tenés un error para "no hay retiros"
 
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < n; i++) {
-            if (historialRetiros.estaVacia()) break;
+
+            if (historialRetiros.estaVacia())
+                break;
 
             Retiro r = historialRetiros.desapilar();
-            Bicicleta bici = r.getBicicleta();
-            Usuario u = r.getUsuario();
-            Estacion est = r.getEstacionOrigen();
 
-            // devolver bici a la estación de origen
-            if (est.hayLugar()) {
-                est.anclarBicicleta(bici);
+            Bicicleta bici = r.getBicicleta();
+            Usuario usuario = r.getUsuario();
+            Estacion origen = r.getEstacionOrigen();
+
+            // devolver bici a estación de origen
+            if (origen.hayLugar()) {
+                origen.getAnclajes().insertarOrdenado(bici);// <<--- CORRECTO
             } else {
-                // si no hay lugar, el usuario (en este caso la bici) queda en cola de anclaje
-                // podés crear una ColaSE<Bicicleta> en la estación si querés simular la espera
+                origen.getEsperaAnclaje().encolar(bici);   // <<--- CORRECCIÓN CLAVE
             }
 
-            // revertir alquiler del usuario
-            u.setBicicletaActual(null);
+            // revertir alquiler
+            usuario.setBicicletaActual(null);
 
-            if (sb.length() > 0) sb.append("|");
-            sb.append(r.toString());
+            // armar string
+            if (sb.length() > 0)
+                sb.append("|");
+
+            sb.append(bici.getCodigo())
+              .append("#")
+              .append(usuario.getCedula())
+              .append("#")
+              .append(origen.getNombre());
         }
 
         return Retorno.ok(sb.toString());
     }
+
 
     
     //3.1.Obtener Usuario------------------------------------------------------

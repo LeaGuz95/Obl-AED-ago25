@@ -130,7 +130,7 @@ public class ListaSE<T> implements ILista<T> {
 
         NodoSE<T> mid = getMiddle(head);
         NodoSE<T> rightStart = mid.getSiguiente();
-        mid.setSiguiente(null);  // cortar lista
+        mid.setSiguiente(null);  
 
         NodoSE<T> left = mergeSort(head, cmp);
         NodoSE<T> right = mergeSort(rightStart, cmp);
@@ -195,5 +195,66 @@ public class ListaSE<T> implements ILista<T> {
             siguiente = siguiente.getSiguiente();
         }
     } while (huboCambio);
+    
+    
+    }   
+    
+    public void insertionSort(Comparator<T> cmp) {
+    if (inicio == null || inicio.getSiguiente() == null)
+        return;
+
+    NodoSE<T> sorted = null; // nueva lista ordenada
+    NodoSE<T> actual = inicio;
+
+    while (actual != null) {
+        NodoSE<T> siguiente = actual.getSiguiente();
+
+        // insertar "actual" en la lista sorted
+        if (sorted == null || cmp.compare(actual.getDato(), sorted.getDato()) < 0) {
+            actual.setSiguiente(sorted);
+            sorted = actual;
+        } else {
+            NodoSE<T> aux = sorted;
+            while (aux.getSiguiente() != null &&
+                   cmp.compare(actual.getDato(), aux.getSiguiente().getDato()) >= 0) {
+                aux = aux.getSiguiente();
+            }
+            actual.setSiguiente(aux.getSiguiente());
+            aux.setSiguiente(actual);
+        }
+        actual = siguiente;
+    }
+
+    inicio = sorted;
 }
+    
+    public void selectionSort(Comparator<T> cmp) {
+    if (inicio == null || inicio.getSiguiente() == null)
+        return;
+
+    NodoSE<T> aux = inicio;
+
+    while (aux != null) {
+        NodoSE<T> min = aux;
+        NodoSE<T> r = aux.getSiguiente();
+
+        while (r != null) {
+            if (cmp.compare(r.getDato(), min.getDato()) < 0) {
+                min = r;
+            }
+            r = r.getSiguiente();
+        }
+
+        // swap datos (no nodos)
+        if (min != aux) {
+            T temp = aux.getDato();
+            aux.setDato(min.getDato());
+            min.setDato(temp);
+        }
+
+        aux = aux.getSiguiente();
+    }
+}
+
+
 }
