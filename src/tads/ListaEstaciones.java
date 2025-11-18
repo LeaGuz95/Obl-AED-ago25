@@ -84,7 +84,10 @@ public class ListaEstaciones {
         return estaciones;
     }
     
-   
+   public boolean vacia() {
+    return estaciones.vacia();
+}
+
 }
 
 
