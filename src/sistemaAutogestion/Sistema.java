@@ -1,10 +1,12 @@
 package sistemaAutogestion;
+import dominio.Barrio;
 import dominio.Bicicleta;
 import dominio.Estacion;
 import dominio.EstadoBicicleta;
 import dominio.Retiro;
 import dominio.TipoBicicleta;
 import dominio.Usuario;
+import tads.ListaBarrio;
 import tads.ListaBicicletas;
 import tads.ListaEstaciones;
 import tads.ListaSE;
@@ -23,7 +25,7 @@ public class Sistema implements IObligatorio {
     private ListaEstaciones estaciones;
     private ListaBicicletas deposito;
     private PilaRetiros historialRetiros;
-    
+    private ListaBarrio barrios;
   
     public ListaBicicletas getDeposito() {
     return deposito;
@@ -37,6 +39,8 @@ public class Sistema implements IObligatorio {
         usuarios = new ListaUsuarios();
         estaciones = new ListaEstaciones();
         deposito = new ListaBicicletas();
+        barrios = new ListaBarrio();
+
         historialRetiros = new PilaRetiros();  // inicializar la pila
     
        return Retorno.ok();
@@ -555,48 +559,52 @@ public class Sistema implements IObligatorio {
         return Retorno.ok(contador);
     }
 
-
-   @Override
+//3.6. Ocupación promedio por barrio  ------------------------
+  @Override
     public Retorno ocupacionPromedioXBarrio() {
         if (estaciones.vacia()) {
-            return Retorno.error1(); // o Retorno.error() genérico según convenga
+            return Retorno.error1();
         }
 
-        // Mapa barrio -> [bicis ancladas, capacidad total]
-        Map<String, int[]> barrioMap = new TreeMap<>(); // TreeMap ordena por clave (barrio) alfabéticamente
+        ListaBarrio listaBarrios = new ListaBarrio();
 
+        // Recorrer estaciones y acumular datos por barrio
         for (int i = 0; i < estaciones.longitud(); i++) {
             try {
                 Estacion e = estaciones.obtener(i);
-                String barrio = e.getBarrio();
-                int ancladas = e.getAnclajes().contar();
-                int capacidad = e.getCapacidad();
-
-                barrioMap.putIfAbsent(barrio, new int[]{0, 0});
-                int[] datos = barrioMap.get(barrio);
-                datos[0] += ancladas;
-                datos[1] += capacidad;
+                listaBarrios.agregarOBuscarYActualizar(
+                    e.getBarrio(),
+                    e.getAnclajes().contar(),
+                    e.getCapacidad()
+                );
             } catch (Exception ex) {
-                // ignorar
+                // ignorar errores individuales
             }
         }
 
-        // Armar string salida: barrio1#porcentaje|barrio2#porcentaje
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, int[]> entry : barrioMap.entrySet()) {
-            String barrio = entry.getKey();
-            int[] datos = entry.getValue();
-            int porcentaje = 0;
-            if (datos[1] > 0) {
-                porcentaje = (int) Math.round((double) datos[0] * 100 / datos[1]);
-            }
+        listaBarrios.ordenar(); // ordenar alfabéticamente
 
-            if (sb.length() > 0) sb.append("|");
-            sb.append(barrio).append("#").append(porcentaje);
+        // Armar string de salida
+        StringBuilder sb = new StringBuilder();
+        ListaSE<Barrio> barrios = listaBarrios.getLista();
+
+        for (int i = 0; i < barrios.longitud(); i++) {
+            try {
+                Barrio b = barrios.obtener(i);
+                int porcentaje = 0;
+                if (b.getCapacidadTotal() > 0) {
+                    porcentaje = (int) Math.round((double) b.getBicisAncladas() * 100 / b.getCapacidadTotal());
+                }
+
+                if (sb.length() > 0) sb.append("|");
+                sb.append(b.getNombre()).append("#").append(porcentaje);
+            } catch (Exception ex) {}
         }
 
         return Retorno.ok(sb.toString());
     }
+
+
 
 
     @Override
