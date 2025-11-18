@@ -7,6 +7,7 @@ import dominio.Retiro;
 import dominio.TipoBicicleta;
 import dominio.TipoUso;
 import dominio.Usuario;
+import tads.ColaSE;
 import tads.ListaBarrio;
 import tads.ListaBicicletas;
 import tads.ListaEstaciones;
@@ -313,6 +314,10 @@ public class Sistema implements IObligatorio {
             est.getAnclajes().sacar(disponible.getCodigo());
             disponible.setEstado(EstadoBicicleta.Alquilada);
             u.setBicicletaActual(disponible);
+
+            // Incrementar contador de veces alquilada
+            disponible.setVecesAlquilada(disponible.getVecesAlquilada() + 1);
+
             return Retorno.ok();
         }
 
@@ -320,6 +325,7 @@ public class Sistema implements IObligatorio {
         est.getEsperaAlquiler().encolar(u);
         return Retorno.ok();
     }
+
 //2.10. Devolver bicicleta -----------------------------------
     @Override
     public Retorno devolverBicicleta(String cedula, String nombreEstacionDestino) {
@@ -607,7 +613,7 @@ public class Sistema implements IObligatorio {
 
 
 
-
+//3.8. Ranking por tipo de uso-----------
    @Override
     public Retorno rankingTiposPorUso() {
         ListaSE<TipoUso> ranking = new ListaSE<>();
@@ -684,15 +690,51 @@ public class Sistema implements IObligatorio {
         }
     }
 
-
-    @Override
+//3.9. Usuarios en espera por alquiler----------------------------- 
+   @Override
     public Retorno usuariosEnEspera(String nombreEstacion) {
-        return Retorno.noImplementada();
+        Estacion est = estaciones.buscar(nombreEstacion);
+        if (est == null) return Retorno.error3();
+
+        ColaSE<Usuario> espera = est.getEsperaAlquiler();
+        if (espera.estaVacia()) return Retorno.ok(""); // ningún usuario en espera
+
+        StringBuilder sb = new StringBuilder();
+        espera.recorrer(u -> {
+            if (sb.length() > 0) sb.append("|");
+            sb.append(u.getCedula());
+        });
+
+        return Retorno.ok(sb.toString());
     }
 
-    @Override
+//3.10. Usuario con mayor cantidad de alquileres
+
+  @Override
     public Retorno usuarioMayor() {
-        return Retorno.noImplementada();
+        if (usuarios.estaVacia()) {
+            return Retorno.error1(); // o Retorno.ok("") si no hay usuarios, según convenga
+        }
+
+        Usuario mayor = null;
+
+        for (int i = 0; i < usuarios.longitud(); i++) {
+            try {
+                Usuario u = usuarios.obtener(i);
+                if (mayor == null || 
+                    u.getCantidadAlquileres() > mayor.getCantidadAlquileres() || 
+                    (u.getCantidadAlquileres() == mayor.getCantidadAlquileres() &&
+                     u.getCedula().compareTo(mayor.getCedula()) < 0)) {
+                    mayor = u;
+                }
+            } catch (Exception ex) {
+                // ignorar errores individuales
+            }
+        }
+
+        if (mayor == null) return Retorno.error1();
+        return Retorno.ok(mayor.getCedula());
     }
+
 
 }

@@ -17,6 +17,8 @@ public class Usuario implements Comparable<Usuario> {
     public Usuario(String cedula, String nombre) {
         this.cedula = cedula;
         this.nombre = nombre;
+         this.cantidadAlquileres = 0; 
+          this.bicicletaActual = null;
     }
 
     public String getCedula() { return cedula; }
