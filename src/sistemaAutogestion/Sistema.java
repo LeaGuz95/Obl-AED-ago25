@@ -5,6 +5,7 @@ import dominio.Estacion;
 import dominio.EstadoBicicleta;
 import dominio.Retiro;
 import dominio.TipoBicicleta;
+import dominio.TipoUso;
 import dominio.Usuario;
 import tads.ListaBarrio;
 import tads.ListaBicicletas;
@@ -559,7 +560,7 @@ public class Sistema implements IObligatorio {
         return Retorno.ok(contador);
     }
 
-//3.6. Ocupación promedio por barrio  ------------------------
+//3.7. Ocupación promedio por barrio  ------------------------
   @Override
     public Retorno ocupacionPromedioXBarrio() {
         if (estaciones.vacia()) {
@@ -607,10 +608,82 @@ public class Sistema implements IObligatorio {
 
 
 
-    @Override
+   @Override
     public Retorno rankingTiposPorUso() {
-        return Retorno.noImplementada();
+        ListaSE<TipoUso> ranking = new ListaSE<>();
+
+        // Recorrer bicicletas del depósito
+        NodoSE<Bicicleta> act = deposito.getLista().getInicio();
+        while (act != null) {
+            Bicicleta b = act.getDato();
+            agregarOTipoUso(ranking, b);
+            act = act.getSiguiente();
+        }
+
+        // Recorrer bicicletas en estaciones
+        NodoSE<Estacion> estAct = estaciones.getLista().getInicio();
+        while (estAct != null) {
+            Estacion e = estAct.getDato();
+            NodoSE<Bicicleta> biciAct = e.getAnclajes().getLista().getInicio();
+            while (biciAct != null) {
+                agregarOTipoUso(ranking, biciAct.getDato());
+                biciAct = biciAct.getSiguiente();
+            }
+            estAct = estAct.getSiguiente();
+        }
+
+        // Ordenar ranking
+        ordenarListaSE(ranking);
+
+        // Construir string final
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < ranking.longitud(); i++) {
+            try {
+                TipoUso t = ranking.obtener(i);
+                if (sb.length() > 0) sb.append("|");
+                sb.append(t.getTipo().name()).append("#").append(t.getCantidadAlquileres());
+            } catch (Exception ex) {}
+        }
+
+        return Retorno.ok(sb.toString());
     }
+
+    // Método auxiliar: agrega o incrementa tipo en ranking
+    private void agregarOTipoUso(ListaSE<TipoUso> ranking, Bicicleta bici) {
+        if (bici == null) return;
+        TipoBicicleta tipo = bici.getTipo();
+        for (int i = 0; i < ranking.longitud(); i++) {
+            try {
+                TipoUso t = ranking.obtener(i);
+                if (t.getTipo() == tipo) {
+                    t.incrementar(bici.getVecesAlquilada());
+                    return;
+                }
+            } catch (Exception e) {}
+        }
+        // Si no existía, agregar nuevo
+        TipoUso nuevo = new TipoUso(tipo);
+        nuevo.incrementar(bici.getVecesAlquilada());
+        ranking.insertar(nuevo, ranking.longitud());
+    }
+
+    // Método auxiliar para ordenar ListaSE según compareTo
+    private <T extends Comparable<T>> void ordenarListaSE(ListaSE<T> lista) {
+        if (lista.vacia() || lista.longitud() == 1) return;
+        for (int i = 0; i < lista.longitud() - 1; i++) {
+            for (int j = i + 1; j < lista.longitud(); j++) {
+                try {
+                    T a = lista.obtener(i);
+                    T b = lista.obtener(j);
+                    if (a.compareTo(b) > 0) {
+                        lista.insertar(b, i);
+                        lista.eliminar(j + 1); // ajustar índice
+                    }
+                } catch (Exception ex) {}
+            }
+        }
+    }
+
 
     @Override
     public Retorno usuariosEnEspera(String nombreEstacion) {

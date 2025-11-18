@@ -79,6 +79,14 @@ public class ListaEstaciones {
             return null;
         }
     }
+    
+    public int longitud() {
+    return estaciones.longitud();
+    }
+
+    public Estacion obtener(int pos) throws Exception {
+        return estaciones.obtener(pos);
+    }
 
     public ListaSE<Estacion> getLista() {
         return estaciones;

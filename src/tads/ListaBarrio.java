@@ -39,6 +39,25 @@ public class ListaBarrio {
             b.agregarCapacidad(capacidad);
         }
     }
+    
+    public void ordenar() {
+    if (barrios.vacia() || barrios.longitud() == 1) return;
+
+    for (int i = 0; i < barrios.longitud() - 1; i++) {
+        for (int j = i + 1; j < barrios.longitud(); j++) {
+            try {
+                Barrio b1 = barrios.obtener(i);
+                Barrio b2 = barrios.obtener(j);
+                if (b1.compareTo(b2) > 0) {
+                    // intercambiar
+                    barrios.insertar(b2, i);
+                    barrios.eliminar(j + 1); // ajustar índice después del insert
+                }
+            } catch (Exception e) {}
+        }
+    }
+}
+
 
     public void insertarOrdenado(Barrio nuevo) {
         if (nuevo == null) return;
