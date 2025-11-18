@@ -47,7 +47,7 @@ public class Estacion implements Comparable<Estacion> {
 
     public Bicicleta buscarBicicleta(String codigo) {
         if (codigo == null) return null;
-        NodoSE<Bicicleta> aux = anclajes.getPrimero();
+        NodoSE<Bicicleta> aux = anclajes.getLista().getInicio();
         while (aux != null) {
             if (aux.getDato().getCodigo().equals(codigo)) return aux.getDato();
             aux = aux.getSiguiente();

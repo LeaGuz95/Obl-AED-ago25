@@ -15,7 +15,6 @@ import dominio.EstadoBicicleta;
 
 public class ListaBicicletas {
     private ListaSE<Bicicleta> bicicletas;
-    private NodoSE<Bicicleta> primero;
 
     public ListaBicicletas() {
         bicicletas = new ListaSE<>();
@@ -81,32 +80,22 @@ public class ListaBicicletas {
         return sb.toString();
     }
 
-    
-    public NodoSE<Bicicleta> getPrimero() {
-        try {
-            return bicicletas.obtener(0) != null 
-                ? new NodoSE<>(bicicletas.obtener(0)) 
-                : null;
-        } catch (Exception e) {
-            return null;
+    // --- ESTA ERA LA PARTE ROTA ---
+    // Recorremos por ListaSE en vez de usar "primero"
+    public Bicicleta buscarDisponible() {
+        for (int i = 0; i < bicicletas.longitud(); i++) {
+            try {
+                Bicicleta b = bicicletas.obtener(i);
+                if (b.getEstado() == EstadoBicicleta.Disponible)
+                    return b;
+            } catch (Exception e) { }
         }
+        return null;
     }
-    
+
     public ListaSE<Bicicleta> getLista() {
         return bicicletas;
     }
-    
-    public Bicicleta buscarDisponible() {
-    NodoSE<Bicicleta> aux = primero;
-    while (aux != null) {
-        if (aux.getDato().getEstado() == EstadoBicicleta.Disponible) {
-            return aux.getDato();
-        }
-        aux = aux.getSiguiente();
-    }
-    return null;
-}
-
 }
 
 

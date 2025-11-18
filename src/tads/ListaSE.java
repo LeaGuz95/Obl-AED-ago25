@@ -4,14 +4,13 @@
  */
 package tads;
 
+import java.util.Comparator;
 import tads.Exceptions.DatoInvalidoException;
 import tads.Exceptions.ListaVaciaException;
 import tads.Exceptions.PosicionInvalidaException;
 
-/**
- *
- * @author ljgp2
- */
+import java.util.Comparator;
+
 public class ListaSE<T> implements ILista<T> {
 
     private NodoSE<T> inicio;
@@ -105,9 +104,96 @@ public class ListaSE<T> implements ILista<T> {
         return inicio == null;
     }
 
-    // Getter protegido para recorrer la lista desde otras estructuras
     public NodoSE<T> getInicio() {
         return inicio;
     }
-}
 
+
+    // ============================================================
+    //                     MERGE SORT PÚBLICO
+    // ============================================================
+
+    public void ordenar(Comparator<T> cmp) {
+        if (inicio == null || inicio.getSiguiente() == null)
+            return;
+        inicio = mergeSort(inicio, cmp);
+    }
+
+
+    // ============================================================
+    //                  MERGE SORT IMPLEMENTACIÓN
+    // ============================================================
+
+    private NodoSE<T> mergeSort(NodoSE<T> head, Comparator<T> cmp) {
+        if (head == null || head.getSiguiente() == null)
+            return head;
+
+        NodoSE<T> mid = getMiddle(head);
+        NodoSE<T> rightStart = mid.getSiguiente();
+        mid.setSiguiente(null);  // cortar lista
+
+        NodoSE<T> left = mergeSort(head, cmp);
+        NodoSE<T> right = mergeSort(rightStart, cmp);
+
+        return merge(left, right, cmp);
+    }
+
+    private NodoSE<T> merge(NodoSE<T> a, NodoSE<T> b, Comparator<T> cmp) {
+        if (a == null) return b;
+        if (b == null) return a;
+
+        NodoSE<T> result;
+
+        if (cmp.compare(a.getDato(), b.getDato()) <= 0) {
+            result = a;
+            result.setSiguiente(merge(a.getSiguiente(), b, cmp));
+        } else {
+            result = b;
+            result.setSiguiente(merge(a, b.getSiguiente(), cmp));
+        }
+
+        return result;
+    }
+
+    private NodoSE<T> getMiddle(NodoSE<T> head) {
+        if (head == null)
+            return head;
+
+        NodoSE<T> slow = head;
+        NodoSE<T> fast = head.getSiguiente();
+
+        while (fast != null && fast.getSiguiente() != null) {
+            slow = slow.getSiguiente();
+            fast = fast.getSiguiente().getSiguiente();
+        }
+
+        return slow;
+    }
+    
+    // ============================================================
+    //                  bubbleSort 
+    // ============================================================
+    
+    public void bubbleSort(Comparator<T> cmp) {
+    if (inicio == null || inicio.getSiguiente() == null) return;
+
+    boolean huboCambio;
+    do {
+        huboCambio = false;
+        NodoSE<T> actual = inicio;
+        NodoSE<T> siguiente = inicio.getSiguiente();
+
+        while (siguiente != null) {
+            if (cmp.compare(actual.getDato(), siguiente.getDato()) > 0) {
+                // swap de datos (más simple que re-enlazar nodos)
+                T tmp = actual.getDato();
+                actual.setDato(siguiente.getDato());
+                siguiente.setDato(tmp);
+                huboCambio = true;
+            }
+            actual = siguiente;
+            siguiente = siguiente.getSiguiente();
+        }
+    } while (huboCambio);
+}
+}

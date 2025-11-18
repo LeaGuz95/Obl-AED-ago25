@@ -510,7 +510,7 @@ public class Sistema implements IObligatorio {
 
         // Recorrer la lista y armar el string
         StringBuilder sb = new StringBuilder();
-        NodoSE<Bicicleta> aux = anclajes.getPrimero();
+        NodoSE<Bicicleta> aux = anclajes.getLista().getInicio();
         while (aux != null) {
             if (sb.length() > 0) sb.append("|");
             sb.append(aux.getDato().getCodigo());

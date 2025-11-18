@@ -16,10 +16,36 @@ public class NodoSE<T> {
         this.dato = dato;
         this.siguiente = null;
     }
+    
+    public NodoSE() {
+        this.dato = null;
+        this.siguiente = null;
+    }
 
-    public T getDato() { return dato; }
-    public void setDato(T dato) { this.dato = dato; }
+     public T getDato() {
+        return dato;
+    }
 
-    public NodoSE<T> getSiguiente() { return siguiente; }
-    public void setSiguiente(NodoSE<T> siguiente) { this.siguiente = siguiente; }
+    public void setDato(T dato) {
+        this.dato = dato;
+    }
+
+    public NodoSE<T> getSiguiente() {
+        return siguiente;
+    }
+
+    public void setSiguiente(NodoSE<T> siguiente) {
+        this.siguiente = siguiente;
+    }
+
+    // Limpia y cómoda: no rompe nada
+    public boolean hasNext() {
+        return this.siguiente != null;
+    }
+
+    // Útil para debug
+    @Override
+    public String toString() {
+        return dato != null ? dato.toString() : "null";
+    }
 }
