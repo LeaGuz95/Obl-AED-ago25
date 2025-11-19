@@ -124,8 +124,9 @@ public class ListaBicicletas {
     try {
         bicicletas.insertar(b, i);
     } catch (Exception e) {}
-}
+    }
 
+    
 }
 
 

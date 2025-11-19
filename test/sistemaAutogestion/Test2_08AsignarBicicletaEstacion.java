@@ -63,7 +63,7 @@ public class Test2_08AsignarBicicletaEstacion {
         retorno = s.asignarBicicletaAEstacion("B00001", "");
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
     }
-    //arreglar
+    //arreglar-----------------------------------------------------
     @Test
     public void asignarBicicleta_Error2_BiciNoExisteODisponible() {
         // bici no existe
