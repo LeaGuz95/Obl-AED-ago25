@@ -82,8 +82,8 @@ public class Estacion implements Comparable<Estacion> {
     public ColaSE<Bicicleta> getEsperaAnclajeBici() {return esperaAnclajeBicis;}
 
    
-       public int cantidadDisponibles() {
-        return this.getCapacidad() - this.getAnclajes().contar();
+          public int cantidadDisponibles() {
+    return anclajes.cantidadDisponibles();
 }
 
 }
