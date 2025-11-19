@@ -13,6 +13,8 @@ public class Bicicleta implements Comparable<Bicicleta> {
     private TipoBicicleta tipo;
     private EstadoBicicleta estado;
     private String motivoMantenimiento; 
+    private Estacion estacionActual;  // null si está en depósito o alquilada
+
    // private boolean enDeposito; // true si está en depósito
     private int vecesAlquilada;
 
@@ -25,6 +27,7 @@ public class Bicicleta implements Comparable<Bicicleta> {
         this.estado = EstadoBicicleta.Disponible; 
         this.motivoMantenimiento = null; 
         this.vecesAlquilada = 0;
+        this.estacionActual = null; 
     }
 
     // Getters
@@ -40,6 +43,15 @@ public class Bicicleta implements Comparable<Bicicleta> {
   //      return enDeposito;
   //  }
 
+    public Estacion getEstacionActual() {
+    return estacionActual;
+}
+
+    public void setEstacionActual(Estacion estacion) {
+        this.estacionActual = estacion;
+    }
+
+    
     public EstadoBicicleta getEstado() {
         return estado;
     }

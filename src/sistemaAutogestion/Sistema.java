@@ -236,7 +236,7 @@ public class Sistema implements IObligatorio {
 
 
 //2.8. Asignar bicicleta a estación ----------------------------------------------------
-   @Override
+  @Override
     public Retorno asignarBicicletaAEstacion(String codigo, String nombreEstacion) {
 
         if (codigo == null || codigo.isEmpty() || nombreEstacion == null || nombreEstacion.isEmpty()) {
@@ -252,35 +252,39 @@ public class Sistema implements IObligatorio {
                 try {
                     Estacion e = estaciones.obtener(i);
                     Bicicleta b = e.buscarBicicleta(codigo);
-                    if (b != null && b.getEstado() == EstadoBicicleta.Disponible) {
+                    if (b != null) {
                         bici = b;
                         estacionActual = e;
                         break;
                     }
-                } catch (Exception ex) {
-                    // ignorar, ya que ListaSE lanza excepción si i es inválido
-                }
+                } catch (Exception ex) { }
             }
         }
 
-
-        if (bici == null || bici.getEstado() != EstadoBicicleta.Disponible) {
-            return Retorno.error2();
+        if (bici == null || bici.getEstado() != EstadoBicicleta.Disponible || bici.getEstacionActual() != null) {
+            return Retorno.error2(); // no disponible para asignar a estación
         }
+
 
         Estacion destino = estaciones.buscar(nombreEstacion);
         if (destino == null) return Retorno.error3();
         if (!destino.hayLugar()) return Retorno.error4();
 
+        // Sacar de la estación actual o del depósito
         if (estacionActual != null) {
             estacionActual.sacarBicicleta(codigo);
         } else {
             deposito.sacar(codigo);
         }
 
+        // Anclar en destino y actualizar estado/estación
+        bici.setEstado(EstadoBicicleta.Disponible);
+        bici.setEstacionActual(destino);
         destino.anclarBicicleta(bici);
+
         return Retorno.ok();
     }
+
 
 
 //2.9. Alquilar bicicleta ------

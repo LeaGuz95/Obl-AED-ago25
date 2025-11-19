@@ -37,16 +37,17 @@ public class Test2_08AsignarBicicletaEstacion {
     // -------------------------------
     //   TESTS
     // -------------------------------
-//arreglar
-    @Test
-    public void asignarBicicleta_Exito() {
-        retorno = s.asignarBicicletaAEstacion("B001", "EST1");
-        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+        @Test
+        public void asignarBicicleta_Exito() {
+            retorno = s.asignarBicicletaAEstacion("B00001", "EST1");
+            assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
-        // Verificar que realmente está en EST1
-        assertNotNull(s.getEstaciones().buscar("EST1")
-                       .getAnclajes().buscar("B001"));
-    }
+            assertNotNull(
+                s.getEstaciones().buscar("EST1")
+                 .getAnclajes().buscar("B00001")
+            );
+        }
+
 
     @Test
     public void asignarBicicleta_Error1() {
@@ -56,59 +57,59 @@ public class Test2_08AsignarBicicletaEstacion {
         retorno = s.asignarBicicletaAEstacion("", "EST1");
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
 
-        retorno = s.asignarBicicletaAEstacion("B001", null);
+        retorno = s.asignarBicicletaAEstacion("B00001", null);
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
 
-        retorno = s.asignarBicicletaAEstacion("B001", "");
+        retorno = s.asignarBicicletaAEstacion("B00001", "");
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
     }
-
+    //arreglar
     @Test
     public void asignarBicicleta_Error2_BiciNoExisteODisponible() {
         // bici no existe
         retorno = s.asignarBicicletaAEstacion("NOEXISTE", "EST1");
         assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
 
-        // asignarla una vez
-        s.asignarBicicletaAEstacion("B001", "EST1");
+        // asignarla una vez → OK
+        s.asignarBicicletaAEstacion("B00001", "EST1");
 
-        // volver a asignarla debe fallar porque ya no está disponible
-        retorno = s.asignarBicicletaAEstacion("B001", "EST2");
+        // volver a asignarla → ya no está disponible
+        retorno = s.asignarBicicletaAEstacion("B00001", "EST2");
         assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
     }
-//arreglar
+    
     @Test
     public void asignarBicicleta_Error3_EstacionNoExiste() {
-        retorno = s.asignarBicicletaAEstacion("B001", "NOEXISTE");
+        retorno = s.asignarBicicletaAEstacion("B00001", "NOEXISTE");
         assertEquals(Retorno.Resultado.ERROR_3, retorno.getResultado());
     }
-//arreglar
     @Test
     public void asignarBicicleta_Error4_SinAnclajesLibres() {
         // EST2 solo tiene 1 anclaje
-        s.asignarBicicletaAEstacion("B001", "EST2");
+        s.asignarBicicletaAEstacion("B00001", "EST2");
 
         // Intentar asignar otra → no hay lugar
-        retorno = s.asignarBicicletaAEstacion("B002", "EST2");
+        retorno = s.asignarBicicletaAEstacion("B00002", "EST2");
         assertEquals(Retorno.Resultado.ERROR_4, retorno.getResultado());
     }
-//arreglar
+
     @Test
     public void asignarBicicleta_DesdeOtraEstacion() {
-        // Primero asigno a EST1
-        s.asignarBicicletaAEstacion("B003", "EST1");
+        // Asignar a EST1
+        s.asignarBicicletaAEstacion("B00003", "EST1");
 
-        // Ahora moverla a EST2 (si hay espacio)
-        retorno = s.asignarBicicletaAEstacion("B003", "EST2");
+        // Mover a EST2
+        retorno = s.asignarBicicletaAEstacion("B00003", "EST2");
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
         // verificar que salió de EST1
         assertNull(s.getEstaciones().buscar("EST1")
-                    .getAnclajes().buscar("B003"));
+                    .getAnclajes().buscar("B00003"));
 
         // verificar que entró a EST2
         assertNotNull(s.getEstaciones().buscar("EST2")
-                       .getAnclajes().buscar("B003"));
+                       .getAnclajes().buscar("B00003"));
     }
+
 }
 
