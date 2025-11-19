@@ -267,7 +267,7 @@ public class Sistema implements IObligatorio {
              deposito.sacar(codigo); // si estaba en depósito
          }
 
-        // Anclar en destino y actualizar estado/estación
+                // Anclar en destino y actualizar estado/estación
         destino.anclarBicicleta(bici);
         bici.setEstado(EstadoBicicleta.Disponible);
         bici.setEstacionActual(destino);
@@ -280,7 +280,7 @@ public class Sistema implements IObligatorio {
         return Retorno.ok();
     }
 
-        // Entregar bicicletas disponibles a usuarios en espera de alquiler
+        // Metodo aparte entrega bicicletas disponibles a usuarios en espera 
     private void entregarBicisAEspereUsuarios(Estacion destino) {
         while (!destino.getEsperaAlquiler().estaVacia()) {
             // Buscar la primera bici disponible
@@ -571,7 +571,7 @@ public class Sistema implements IObligatorio {
             if (sb.length() == 0) {
                 sb.append(codigo);
             } else {
-                // Inserción ordenada en el string
+                // Inserción ordenada 
                 String[] partes = sb.toString().split("\\|");
                 int pos = 0;
                 while (pos < partes.length && partes[pos].compareTo(codigo) < 0) {
@@ -671,7 +671,7 @@ public class Sistema implements IObligatorio {
 
 
 
-//3.8. Ranking por tipo de uso-----------
+//3.8. Ranking por tipo de uso----------- //Se podia hacer mas facil pero me quede sin tiempo
    @Override
     public Retorno rankingTiposPorUso() {
         if (estaciones == null || deposito == null)
@@ -748,7 +748,7 @@ public class Sistema implements IObligatorio {
 
      Estacion est = estaciones.buscar(nombreEstacion);
      if (est == null)
-         return Retorno.error1(); // si la estación no existe
+         return Retorno.error1(); //estación no existe
 
      if (est.getEsperaAlquiler().estaVacia())
          return Retorno.ok(""); // sin usuarios en espera
@@ -769,7 +769,7 @@ public class Sistema implements IObligatorio {
 
 
 
-//3.10. Usuario con mayor cantidad de alquileres
+//3.10. Usuario con mayor cantidad de alquileres----------------------------
 
 @Override
 public Retorno usuarioMayor() {

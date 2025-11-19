@@ -251,7 +251,7 @@ public class ListaSE<T> implements ILista<T> {
             r = r.getSiguiente();
         }
 
-        // swap datos (no nodos)
+      
         if (min != aux) {
             T temp = aux.getDato();
             aux.setDato(min.getDato());
