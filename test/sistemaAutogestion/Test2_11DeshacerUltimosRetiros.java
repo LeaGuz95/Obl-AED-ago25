@@ -57,29 +57,29 @@ public void setUp() {
         retorno = s.deshacerUltimosRetiros(-10);
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
     }
-//ERROR
+
     @Test
-  public void deshacerRetirosOK_2() {
-      // Deshacer los últimos 2 retiros (Sara y Luis)
-      retorno = s.deshacerUltimosRetiros(2);
+    public void deshacerRetirosOK_2() {
+        // Deshacer los últimos 2 retiros (Sara y Luis)
+        retorno = s.deshacerUltimosRetiros(2);
 
-      assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
-      // Se deshacen los últimos 2 retiros: primero Sara, luego Luis
-      String esperado = "B00003#30000003#EST1|B00002#20000002#EST1";
-      assertEquals(esperado, retorno.getValorString());
+        // Se deshacen los últimos 2 retiros: primero Sara, luego Luis
+        String esperado = "B00003#30000003#EST1|B00002#20000002#EST1";
+        assertEquals(esperado, retorno.getValorString());
 
-      // Validación básica: usuarios sin bici
-      Usuario uSara = s.getUsuarios().buscar("30000003");
-      Usuario uLuis = s.getUsuarios().buscar("20000002");
+        // Validación básica: usuarios sin bici
+        Usuario uSara = s.getUsuarios().buscar("30000003");
+        Usuario uLuis = s.getUsuarios().buscar("20000002");
 
-      assertNull(uSara.getBicicletaActual());
-      assertNull(uLuis.getBicicletaActual());
+        assertNull(uSara.getBicicletaActual());
+        assertNull(uLuis.getBicicletaActual());
 
-      // Ana todavía tiene su bici
-      Usuario uAna = s.getUsuarios().buscar("10000001");
-      assertNotNull(uAna.getBicicletaActual());
-  }
+        // Ana todavía tiene su bici
+        Usuario uAna = s.getUsuarios().buscar("10000001");
+        assertNotNull(uAna.getBicicletaActual());
+    }
 
     @Test
     public void deshacerRetirosOK_TodosLosDisponibles() {
