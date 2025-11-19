@@ -261,7 +261,7 @@ public class Sistema implements IObligatorio {
             }
         }
 
-        if (bici == null || bici.getEstado() != EstadoBicicleta.Disponible || bici.getEstacionActual() != null) {
+        if (bici == null || bici.getEstado() != EstadoBicicleta.Disponible ) {
             return Retorno.error2(); // no disponible para asignar a estación
         }
 
@@ -271,11 +271,11 @@ public class Sistema implements IObligatorio {
         if (!destino.hayLugar()) return Retorno.error4();
 
         // Sacar de la estación actual o del depósito
-        if (estacionActual != null) {
-            estacionActual.sacarBicicleta(codigo);
-        } else {
-            deposito.sacar(codigo);
-        }
+         if (estacionActual != null) {
+             estacionActual.sacarBicicleta(codigo); // sacar de la estación donde está actualmente
+         } else {
+             deposito.sacar(codigo); // si estaba en depósito
+         }
 
         // Anclar en destino y actualizar estado/estación
         bici.setEstado(EstadoBicicleta.Disponible);
