@@ -10,7 +10,7 @@ package dominio;
  */
 
 public enum EstadoBicicleta {
-    Deposito,
+   // Deposito,
     Alquilada,
     Mantenimiento,
     Disponible,

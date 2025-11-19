@@ -85,8 +85,10 @@ public class ListaEstaciones {
     }
 
     public Estacion obtener(int pos) throws Exception {
-        return estaciones.obtener(pos);
-    }
+       return estaciones.obtener(pos); // estaciones es ListaSE<Estacion>, así que esto devuelve Estacion
+   }
+
+
 
     public ListaSE<Estacion> getLista() {
         return estaciones;

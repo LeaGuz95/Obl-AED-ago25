@@ -108,6 +108,9 @@ public class ListaSE<T> implements ILista<T> {
         return inicio;
     }
 
+    public ListaSE<T> getLista() {
+        return this;
+    }
 
     // ============================================================
     //                     MERGE SORT PÚBLICO

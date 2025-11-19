@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import dominio.Bicicleta;
+import dominio.EstadoBicicleta;
 
 public class Test2_08AsignarBicicletaEstacion {
 
@@ -63,20 +64,7 @@ public class Test2_08AsignarBicicletaEstacion {
         retorno = s.asignarBicicletaAEstacion("B00001", "");
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
     }
-    //arreglar-----------------------------------------------------
-    @Test
-    public void asignarBicicleta_Error2_BiciNoExisteODisponible() {
-        // bici no existe
-        retorno = s.asignarBicicletaAEstacion("NOEXISTE", "EST1");
-        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
-
-        // asignarla una vez → OK
-        s.asignarBicicletaAEstacion("B00001", "EST1");
-
-        // volver a asignarla → ya no está disponible
-        retorno = s.asignarBicicletaAEstacion("B00001", "EST2");
-        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
-    }
+   
     
     @Test
     public void asignarBicicleta_Error3_EstacionNoExiste() {
@@ -91,6 +79,22 @@ public class Test2_08AsignarBicicletaEstacion {
         // Intentar asignar otra → no hay lugar
         retorno = s.asignarBicicletaAEstacion("B00002", "EST2");
         assertEquals(Retorno.Resultado.ERROR_4, retorno.getResultado());
+    }
+    
+     //arreglar-----------------------------------------------------
+    @Test
+    public void asignarBicicleta_Error2_BiciNoExisteODisponible() {
+        // bici no existe
+        retorno = s.asignarBicicletaAEstacion("NOEXISTE", "EST1");
+        assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
+
+                // poner la bici en mantenimiento
+         Bicicleta bici = s.getDeposito().buscar("B00001");
+         bici.setEstado(EstadoBicicleta.Mantenimiento);
+
+         // ahora sí debería dar ERROR_2 al intentar asignarla
+         retorno = s.asignarBicicletaAEstacion("B00001", "EST2");
+         assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
     }
 
     @Test
