@@ -49,6 +49,28 @@ public class Test2_08AsignarBicicletaEstacion {
             );
         }
 
+        @Test
+    public void asignarVariasBicicletas_MultiplesEstaciones() {
+        // Asignar B00001 a EST1
+        Retorno ret1 = s.asignarBicicletaAEstacion("B00001", "EST1");
+        assertEquals(Retorno.Resultado.OK, ret1.getResultado());
+        assertNotNull(s.getEstaciones().buscar("EST1").getAnclajes().buscar("B00001"));
+
+        // Asignar B00002 a EST2
+        Retorno ret2 = s.asignarBicicletaAEstacion("B00002", "EST2");
+        assertEquals(Retorno.Resultado.OK, ret2.getResultado());
+        assertNotNull(s.getEstaciones().buscar("EST2").getAnclajes().buscar("B00002"));
+
+        // Asignar B00003 a EST1 (segunda bici, capacidad 2)
+        Retorno ret3 = s.asignarBicicletaAEstacion("B00003", "EST1");
+        assertEquals(Retorno.Resultado.OK, ret3.getResultado());
+        assertNotNull(s.getEstaciones().buscar("EST1").getAnclajes().buscar("B00003"));
+
+        // Verificar que EST1 tiene 2 bicis y EST2 tiene 1 bici
+        assertEquals(2, s.getEstaciones().buscar("EST1").getAnclajes().contar());
+        assertEquals(1, s.getEstaciones().buscar("EST2").getAnclajes().contar());
+    }
+
 
     @Test
     public void asignarBicicleta_Error1() {

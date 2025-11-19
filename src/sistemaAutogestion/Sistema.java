@@ -277,7 +277,7 @@ public class Sistema implements IObligatorio {
     if (!destino.getEsperaAlquiler().estaVacia() && bici.getEstado() == EstadoBicicleta.Disponible) {
         Usuario primerUsuario = destino.getEsperaAlquiler().desencolar();
         destino.getAnclajes().sacar(bici.getCodigo());
-        bici.setEstado(EstadoBicicleta.Alquilada);
+      //  bici.setEstado(EstadoBicicleta.Alquilada);
         primerUsuario.setBicicletaActual(bici);
         bici.setVecesAlquilada(bici.getVecesAlquilada() + 1);
     }
@@ -578,7 +578,7 @@ public class Sistema implements IObligatorio {
 
 
 //3.6. Estaciones con disponibilidad mayor ------------------------
-   @Override
+  @Override
     public Retorno estacionesConDisponibilidad(int n) {
         if (n <= 1)
             return Retorno.error1();
@@ -596,6 +596,7 @@ public class Sistema implements IObligatorio {
 
         return Retorno.ok(contador);
     }
+
 
 //3.7. Ocupación promedio por barrio  ------------------------
   @Override

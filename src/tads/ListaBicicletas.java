@@ -93,7 +93,7 @@ public class ListaBicicletas {
         }
         return null;
     }
-
+//BORRAR
     public int cantidadDisponibles() {
     int c = 0;
     NodoSE<Bicicleta> act = this.getLista().getInicio(); // o getInicio(), según tu implementación

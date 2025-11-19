@@ -69,7 +69,7 @@ public class Test2_10DevolverBicicleta {
         retorno = s.devolverBicicleta("100", "NOEXISTE");
         assertEquals(Retorno.Resultado.ERROR_3, retorno.getResultado());
     }
-
+//ERROR
   @Test
     public void devolverBicicletaOK_Simple() {
         // Obtener la estación
@@ -101,7 +101,7 @@ public class Test2_10DevolverBicicleta {
         assertEquals(1, est1.cantidadDisponibles());
     }
 
-
+//ERROR
     @Test
     public void devolverBicicleta_OK_ConUsuarioEnEspera() {
         // Registrar usuarios con cédula válida
