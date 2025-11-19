@@ -15,10 +15,11 @@ public class Barrio implements Comparable<Barrio> {
     private int capacidadTotal;
 
     public Barrio(String nombre) {
-        this.nombre = nombre;
-        this.bicisAncladas = 0;
-        this.capacidadTotal = 0;
-    }
+    this.nombre = nombre.trim().toUpperCase();
+    this.bicisAncladas = 0;
+    this.capacidadTotal = 0;
+}
+
 
     public String getNombre() { return nombre; }
     public int getBicisAncladas() { return bicisAncladas; }
@@ -27,6 +28,13 @@ public class Barrio implements Comparable<Barrio> {
     public void agregarBicis(int cantidad) { this.bicisAncladas += cantidad; }
     public void agregarCapacidad(int cantidad) { this.capacidadTotal += cantidad; }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Barrio)) return false;
+        Barrio b = (Barrio) o;
+        return this.nombre.equalsIgnoreCase(b.nombre);
+    }
+    
     @Override
     public int compareTo(Barrio otra) {
         return this.nombre.compareToIgnoreCase(otra.nombre); // orden alfabético

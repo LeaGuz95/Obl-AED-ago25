@@ -38,7 +38,7 @@ public class Estacion implements Comparable<Estacion> {
         if (b == null) return false;
         if (hayLugar()) {
             anclajes.insertarOrdenado(b);
-            b.setEnDeposito(false);
+           
             return true;
         }
         return false;
