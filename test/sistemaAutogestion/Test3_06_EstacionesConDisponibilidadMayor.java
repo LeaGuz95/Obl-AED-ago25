@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class Test3_06_EstacionesConDisponibilidadMayor {
-
+//Arreglar
     @Test
     public void test_OK() {
         Sistema s = new Sistema();
