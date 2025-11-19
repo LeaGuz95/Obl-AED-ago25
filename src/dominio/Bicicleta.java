@@ -13,7 +13,7 @@ public class Bicicleta implements Comparable<Bicicleta> {
     private TipoBicicleta tipo;
     private EstadoBicicleta estado;
     private String motivoMantenimiento; 
-    private boolean enDeposito; // true si está en depósito
+   // private boolean enDeposito; // true si está en depósito
     private int vecesAlquilada;
 
 
@@ -21,7 +21,7 @@ public class Bicicleta implements Comparable<Bicicleta> {
     public Bicicleta(String codigo, TipoBicicleta tipo) {
         this.codigo = codigo;
         this.tipo = tipo;
-        this.enDeposito = true; 
+       // this.enDeposito = true; 
         this.estado = EstadoBicicleta.Disponible; 
         this.motivoMantenimiento = null; 
         this.vecesAlquilada = 0;
@@ -36,9 +36,9 @@ public class Bicicleta implements Comparable<Bicicleta> {
         return tipo;
     }
 
-    public boolean isEnDeposito() {
-        return enDeposito;
-    }
+  //  public boolean isEnDeposito() {
+  //      return enDeposito;
+  //  }
 
     public EstadoBicicleta getEstado() {
         return estado;
@@ -52,9 +52,9 @@ public class Bicicleta implements Comparable<Bicicleta> {
         return vecesAlquilada;
     }
     // Setters
-    public void setEnDeposito(boolean enDeposito) {
-        this.enDeposito = enDeposito;
-    }
+  //  public void setEnDeposito(boolean enDeposito) {
+  //      this.enDeposito = enDeposito;
+   // }
     
     public void setVecesAlquilada(int vecesAlquilada) {
     this.vecesAlquilada = vecesAlquilada;
@@ -73,7 +73,7 @@ public class Bicicleta implements Comparable<Bicicleta> {
         String info = "Bicicleta{" +
                 "codigo='" + codigo + '\'' +
                 ", tipo='" + tipo + '\'' +
-                ", enDeposito=" + enDeposito +
+              //  ", enDeposito=" + enDeposito +
                 ", estado=" + estado;
         if (motivoMantenimiento != null) {
             info += ", motivo='" + motivoMantenimiento + "'";

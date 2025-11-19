@@ -15,7 +15,7 @@ import dominio.EstadoBicicleta;
 
 public class ListaBicicletas {
     private ListaSE<Bicicleta> bicicletas;
-     private NodoSE<Bicicleta> inicio;
+   //  private NodoSE<Bicicleta> inicio;
 
     public ListaBicicletas() {
         bicicletas = new ListaSE<>();
@@ -114,26 +114,18 @@ public class ListaBicicletas {
     }
     
     public void insertarOrdenado(Bicicleta b) {
-        NodoSE<Bicicleta> nuevo = new NodoSE<>(b);
-
-        // insertar al inicio
-        if (inicio == null || inicio.getDato().compareTo(b) > 0) {
-            nuevo.setSiguiente(inicio);
-            inicio = nuevo;
-            return;
-        }
-
-        NodoSE<Bicicleta> act = inicio;
-
-        // avanzar mientras el siguiente sea menor
-        while (act.getSiguiente() != null &&
-               act.getSiguiente().getDato().compareTo(b) < 0) {
-            act = act.getSiguiente();
-        }
-
-        nuevo.setSiguiente(act.getSiguiente());
-        act.setSiguiente(nuevo);
+    if (b == null) return;
+    int i = 0;
+    for (; i < bicicletas.longitud(); i++) {
+        try {
+            if (bicicletas.obtener(i).compareTo(b) > 0) break;
+        } catch (Exception e) {}
     }
+    try {
+        bicicletas.insertar(b, i);
+    } catch (Exception e) {}
+}
+
 }
 
 

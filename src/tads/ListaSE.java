@@ -4,7 +4,7 @@
  */
 package tads;
 
-import java.util.Comparator;
+
 import tads.Exceptions.DatoInvalidoException;
 import tads.Exceptions.ListaVaciaException;
 import tads.Exceptions.PosicionInvalidaException;
@@ -200,33 +200,33 @@ public class ListaSE<T> implements ILista<T> {
     }   
     
     public void insertionSort(Comparator<T> cmp) {
-    if (inicio == null || inicio.getSiguiente() == null)
-        return;
+        if (inicio == null || inicio.getSiguiente() == null)
+            return;
 
-    NodoSE<T> sorted = null; // nueva lista ordenada
-    NodoSE<T> actual = inicio;
+        NodoSE<T> sorted = null; // nueva lista ordenada
+        NodoSE<T> actual = inicio;
 
-    while (actual != null) {
-        NodoSE<T> siguiente = actual.getSiguiente();
+        while (actual != null) {
+            NodoSE<T> siguiente = actual.getSiguiente();
 
-        // insertar "actual" en la lista sorted
-        if (sorted == null || cmp.compare(actual.getDato(), sorted.getDato()) < 0) {
-            actual.setSiguiente(sorted);
-            sorted = actual;
-        } else {
-            NodoSE<T> aux = sorted;
-            while (aux.getSiguiente() != null &&
-                   cmp.compare(actual.getDato(), aux.getSiguiente().getDato()) >= 0) {
-                aux = aux.getSiguiente();
+            // insertar "actual" en la lista sorted
+            if (sorted == null || cmp.compare(actual.getDato(), sorted.getDato()) < 0) {
+                actual.setSiguiente(sorted);
+                sorted = actual;
+            } else {
+                NodoSE<T> aux = sorted;
+                while (aux.getSiguiente() != null &&
+                       cmp.compare(actual.getDato(), aux.getSiguiente().getDato()) >= 0) {
+                    aux = aux.getSiguiente();
+                }
+                actual.setSiguiente(aux.getSiguiente());
+                aux.setSiguiente(actual);
             }
-            actual.setSiguiente(aux.getSiguiente());
-            aux.setSiguiente(actual);
+            actual = siguiente;
         }
-        actual = siguiente;
-    }
 
-    inicio = sorted;
-}
+        inicio = sorted;
+    }
     
     public void selectionSort(Comparator<T> cmp) {
     if (inicio == null || inicio.getSiguiente() == null)
