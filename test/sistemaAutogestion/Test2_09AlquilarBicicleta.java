@@ -43,14 +43,14 @@ public class Test2_09AlquilarBicicleta {
 
    @Test
     public void alquilarBicicleta_Exito() {
-        // Preparar: asignar bici a estación
+        // asignar bici a estación
         s.asignarBicicletaAEstacion("B00001", "EST1");
 
-        // Usar usuario válido
+        // Usar usuario 
         retorno = s.alquilarBicicleta("12345678", "EST1");
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
-        // Usuario debe tener la bici
+        // Usuario bici
         assertNotNull(s.getUsuarios().buscar("12345678").getBicicletaActual());
         assertEquals("B00001", s.getUsuarios().buscar("12345678").getBicicletaActual().getCodigo());
 

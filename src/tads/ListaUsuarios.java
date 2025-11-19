@@ -44,16 +44,19 @@ public class ListaUsuarios {
         return null;
     }
     
-    
     public NodoSE<Usuario> getPrimero() {
-        try {
-            return usuarios.obtener(0) != null 
-                ? new NodoSE<>(usuarios.obtener(0)) 
-                : null;
-        } catch (Exception e) {
-            return null;
-        }
-    }
+    return usuarios.getInicio();  // suponiendo que tu ListaSE tiene esto
+}
+
+   // public NodoSE<Usuario> getPrimero() {
+   //     try {
+   //         return usuarios.obtener(0) != null 
+   //             ? new NodoSE<>(usuarios.obtener(0)) 
+   //             : null;
+   //     } catch (Exception e) {
+   //         return null;
+   //     }
+   // }
 
     public boolean existeUsuario(String cedula) {
         for (int i = 0; i < usuarios.longitud(); i++) {
@@ -98,6 +101,33 @@ public class ListaUsuarios {
 }
 
 
+public ListaSE<Usuario> obtenerOrdenadosPorCedula() {
+    ListaSE<Usuario> ordenados = new ListaSE<>();
+
+    // Copiar usuarios a la nueva lista
+    for (int i = 0; i < usuarios.longitud(); i++) {
+        try {
+            Usuario u = usuarios.obtener(i);
+
+            // Inserción ordenada por CÉDULA
+            boolean insertado = false;
+            for (int j = 0; j < ordenados.longitud(); j++) {
+                if (u.getCedula().compareTo(ordenados.obtener(j).getCedula()) < 0) {
+                    ordenados.insertar(u, j);
+                    insertado = true;
+                    break;
+                }
+            }
+
+            if (!insertado) {
+                ordenados.insertar(u, ordenados.longitud());
+            }
+
+        } catch (Exception e) {}
+    }
+
+    return ordenados;
+}
 
 
     public ListaSE<Usuario> getLista() {

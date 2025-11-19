@@ -332,7 +332,7 @@ public class Sistema implements IObligatorio {
             est.getAnclajes().sacar(disponible.getCodigo());
             disponible.setEstado(EstadoBicicleta.Alquilada);
             u.setBicicletaActual(disponible);
-
+            u.sumarAlquiler();
             // Incrementar contador de veces alquilada
             disponible.setVecesAlquilada(disponible.getVecesAlquilada() + 1);
 
@@ -675,24 +675,24 @@ public class Sistema implements IObligatorio {
    @Override
     public Retorno rankingTiposPorUso() {
         if (estaciones == null || deposito == null)
-            return Retorno.noImplementada();
+           return Retorno.error1();
 
        
         ListaSE<TipoUso> usos = new ListaSE<>();
 
-        // agregar todos los tipos de bicicletas posibles a la lista
+        // TODAS LAS BICIS PAKA
         for (TipoBicicleta tipo : TipoBicicleta.values()) {
             usos.adicionar(new TipoUso(tipo));
         }
 
-        // Recorrer todas las estaciones y sumar los alquileres
+        // TODAS LAS ESTACIONES Y SUMATE TODO
         NodoSE<Estacion> nodoEst = estaciones.getPrimero();
         while (nodoEst != null) {
             Estacion e = nodoEst.getDato();
             NodoSE<Bicicleta> nodoBici = e.getAnclajes().getLista().getInicio();
             while (nodoBici != null) {
                 Bicicleta b = nodoBici.getDato();
-                // buscar el tipo correspondiente
+                // BUSCA EL TIPO
                 for (int i = 0; i < usos.longitud(); i++) {
                     try {
                         TipoUso tu = usos.obtener(i);
@@ -707,7 +707,7 @@ public class Sistema implements IObligatorio {
             nodoEst = nodoEst.getSiguiente();
         }
 
-        // Recorrer depósito también
+        // RECORRETE EL DEPOSITO
         NodoSE<Bicicleta> nodoDep = deposito.getLista().getInicio();
         while (nodoDep != null) {
             Bicicleta b = nodoDep.getDato();
@@ -726,7 +726,7 @@ public class Sistema implements IObligatorio {
         // Ordenar lista por cantidad descendente y luego alfabético
         usos.selectionSort((a, b) -> a.compareTo(b));
 
-        // Construir string de retorno
+        // Construir string 
         StringBuilder sb = new StringBuilder();
         NodoSE<TipoUso> nodoUso = usos.getInicio();
         while (nodoUso != null) {
@@ -771,31 +771,43 @@ public class Sistema implements IObligatorio {
 
 //3.10. Usuario con mayor cantidad de alquileres
 
-  @Override
-    public Retorno usuarioMayor() {
-        if (usuarios.estaVacia()) {
-            return Retorno.error1(); // o Retorno.ok("") si no hay usuarios, según convenga
-        }
+@Override
+public Retorno usuarioMayor() {
+    if (usuarios == null || usuarios.getPrimero() == null) {
+        System.out.println("DEBUG: lista vacía");
+        return Retorno.error1();
+    }
 
-        Usuario mayor = null;
+    NodoSE<Usuario> nodo = usuarios.getPrimero();
+    Usuario mayor = nodo.getDato();
+    System.out.println("DEBUG: inicial mayor = " + mayor.getCedula() + 
+                       " (" + mayor.getCantidadAlquileres() + ")");
+    nodo = nodo.getSiguiente();
 
-        for (int i = 0; i < usuarios.longitud(); i++) {
-            try {
-                Usuario u = usuarios.obtener(i);
-                if (mayor == null || 
-                    u.getCantidadAlquileres() > mayor.getCantidadAlquileres() || 
-                    (u.getCantidadAlquileres() == mayor.getCantidadAlquileres() &&
-                     u.getCedula().compareTo(mayor.getCedula()) < 0)) {
-                    mayor = u;
-                }
-            } catch (Exception ex) {
-                // ignorar errores individuales
+    while (nodo != null) {
+        Usuario actual = nodo.getDato();
+        System.out.println("DEBUG: evaluando = " + actual.getCedula() + 
+                           " (" + actual.getCantidadAlquileres() + ")");
+
+        if (actual.getCantidadAlquileres() > mayor.getCantidadAlquileres()) {
+            System.out.println("DEBUG: nuevo mayor por alquileres → " + actual.getCedula());
+            mayor = actual;
+
+        } else if (actual.getCantidadAlquileres() == mayor.getCantidadAlquileres()) {
+            System.out.println("DEBUG: empate, comparando cédulas → " 
+                               + actual.getCedula() + " vs " + mayor.getCedula());
+            if (actual.getCedula().compareTo(mayor.getCedula()) < 0) {
+                System.out.println("DEBUG: nuevo mayor por cédula → " + actual.getCedula());
+                mayor = actual;
             }
         }
 
-        if (mayor == null) return Retorno.error1();
-        return Retorno.ok(mayor.getCedula());
+        nodo = nodo.getSiguiente();
     }
+
+    System.out.println("DEBUG: resultado final = " + mayor.getCedula());
+    return Retorno.ok(mayor.getCedula());
+}
 
 
 }

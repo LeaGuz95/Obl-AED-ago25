@@ -25,7 +25,7 @@ public class Test2_07EliminarEstacion {
         retorno = s.eliminarEstacion("EST1");
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
-        // Verificar que realmente no exista más (usa el getter que te indico abajo)
+        // Verificar que realmente no exista más 
         assertNull(s.getEstaciones().buscar("EST1"));
     }
 
@@ -46,7 +46,7 @@ public class Test2_07EliminarEstacion {
 
     @Test
     public void eliminarEstacionError3_BicicletasEnAnclajes() {
-        // registrar bici y asignarla a la estación (anclar)
+        // registrar bici y asignarla a la estación
         s.registrarBicicleta("B00001", "URBANA");
 
         // NO registrar usuarios, así la bici permanece anclada
@@ -62,11 +62,10 @@ public class Test2_07EliminarEstacion {
 
     @Test
     public void eliminarEstacionError3_ColaDeEspera() {
-        // Registrar usuario y pedir bici en EST1 -> si no hay bicis, queda en cola
+       
         s.registrarUsuario("12345678", "Juan Perez");
         retorno = s.alquilarBicicleta("12345678", "EST1");
-        // si alquilarBicicleta devuelve OK al poner en cola o NO_IMPLEMENTADA, adaptá según impl.
-        // esperamos que ahora haya cola y la eliminación falle
+   
         assertEquals(Retorno.Resultado.ERROR_3, s.eliminarEstacion("EST1").getResultado());
     }
 

@@ -49,9 +49,9 @@ public class Test2_08AsignarBicicletaEstacion {
             );
         }
 
-        @Test
-    public void asignarVariasBicicletas_MultiplesEstaciones() {
-        // Asignar B00001 a EST1
+      @Test
+      public void asignarVariasBicicletas_MultiplesEstaciones() {
+       
         Retorno ret1 = s.asignarBicicletaAEstacion("B00001", "EST1");
         assertEquals(Retorno.Resultado.OK, ret1.getResultado());
         assertNotNull(s.getEstaciones().buscar("EST1").getAnclajes().buscar("B00001"));
