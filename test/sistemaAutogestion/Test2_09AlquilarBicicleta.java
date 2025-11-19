@@ -40,7 +40,7 @@ public class Test2_09AlquilarBicicleta {
     // ------------------------------------------------------------------------
     // TESTS
     // ------------------------------------------------------------------------
-//ARREGLAR
+
    @Test
     public void alquilarBicicleta_Exito() {
         // Preparar: asignar bici a estación

@@ -281,7 +281,17 @@ public class Sistema implements IObligatorio {
         bici.setEstado(EstadoBicicleta.Disponible);
         bici.setEstacionActual(destino);
         destino.anclarBicicleta(bici);
-
+   
+        // Entrega automática si hay usuarios en espera
+        ColaSE<Usuario> cola = destino.getEsperaAlquiler();
+        if (!cola.estaVacia()) {  // o esVacia() según tu implementación
+            Usuario primerUsuario = cola.desencolar();
+            destino.getAnclajes().sacar(bici.getCodigo());
+            bici.setEstado(EstadoBicicleta.Alquilada);
+            primerUsuario.setBicicletaActual(bici);
+            bici.setVecesAlquilada(bici.getVecesAlquilada() + 1);
+        }
+            
         return Retorno.ok();
     }
 
