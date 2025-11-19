@@ -86,7 +86,7 @@ public class Test2_09AlquilarBicicleta {
     }
     @Test
     public void alquilarBicicleta_SinBicicletas_UsuarioEnCola() {
-        // No asignamos ninguna bici → no hay disponibles
+        // No asignamos ninguna bici 
         retorno = s.alquilarBicicleta("12345678", "EST1");
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 

@@ -774,30 +774,20 @@ public class Sistema implements IObligatorio {
 @Override
 public Retorno usuarioMayor() {
     if (usuarios == null || usuarios.getPrimero() == null) {
-        System.out.println("DEBUG: lista vacía");
         return Retorno.error1();
     }
 
     NodoSE<Usuario> nodo = usuarios.getPrimero();
     Usuario mayor = nodo.getDato();
-    System.out.println("DEBUG: inicial mayor = " + mayor.getCedula() + 
-                       " (" + mayor.getCantidadAlquileres() + ")");
     nodo = nodo.getSiguiente();
 
     while (nodo != null) {
         Usuario actual = nodo.getDato();
-        System.out.println("DEBUG: evaluando = " + actual.getCedula() + 
-                           " (" + actual.getCantidadAlquileres() + ")");
 
         if (actual.getCantidadAlquileres() > mayor.getCantidadAlquileres()) {
-            System.out.println("DEBUG: nuevo mayor por alquileres → " + actual.getCedula());
             mayor = actual;
-
         } else if (actual.getCantidadAlquileres() == mayor.getCantidadAlquileres()) {
-            System.out.println("DEBUG: empate, comparando cédulas → " 
-                               + actual.getCedula() + " vs " + mayor.getCedula());
             if (actual.getCedula().compareTo(mayor.getCedula()) < 0) {
-                System.out.println("DEBUG: nuevo mayor por cédula → " + actual.getCedula());
                 mayor = actual;
             }
         }
@@ -805,7 +795,6 @@ public Retorno usuarioMayor() {
         nodo = nodo.getSiguiente();
     }
 
-    System.out.println("DEBUG: resultado final = " + mayor.getCedula());
     return Retorno.ok(mayor.getCedula());
 }
 
