@@ -1,5 +1,5 @@
 package sistemaAutogestion;
-import dominio.Barrio;
+
 import dominio.Bicicleta;
 import dominio.Estacion;
 import dominio.EstadoBicicleta;
@@ -8,7 +8,7 @@ import dominio.TipoBicicleta;
 import dominio.TipoUso;
 import dominio.Usuario;
 import tads.ColaSE;
-import tads.ListaBarrio;
+
 import tads.ListaBicicletas;
 import tads.ListaEstaciones;
 import tads.ListaSE;
@@ -28,7 +28,7 @@ public class Sistema implements IObligatorio {
     private ListaEstaciones estaciones;
     private ListaBicicletas deposito;
     private PilaRetiros historialRetiros;
-    private ListaBarrio barrios;
+   
   
     public ListaBicicletas getDeposito() {
     return deposito;
@@ -44,9 +44,7 @@ public class Sistema implements IObligatorio {
         return historialRetiros;
     }
 
-    public ListaBarrio getBarrios() {
-        return barrios;
-    }
+   
     
     //2.1. Crear Sistema de Gestión--------------------------------------
   @Override
@@ -54,7 +52,7 @@ public class Sistema implements IObligatorio {
         usuarios = new ListaUsuarios();
         estaciones = new ListaEstaciones();
         deposito = new ListaBicicletas();
-        barrios = new ListaBarrio();
+     
 
         historialRetiros = new PilaRetiros();  // inicializar la pila
     
@@ -676,107 +674,99 @@ public class Sistema implements IObligatorio {
 //3.8. Ranking por tipo de uso-----------
    @Override
     public Retorno rankingTiposPorUso() {
-        ListaSE<TipoUso> ranking = new ListaSE<>();
+        if (estaciones == null || deposito == null)
+            return Retorno.noImplementada();
 
-        // Recorrer bicicletas del depósito
-        NodoSE<Bicicleta> act = deposito.getLista().getInicio();
-        while (act != null) {
-            Bicicleta b = act.getDato();
-            agregarOTipoUso(ranking, b);
-            act = act.getSiguiente();
+       
+        ListaSE<TipoUso> usos = new ListaSE<>();
+
+        // agregar todos los tipos de bicicletas posibles a la lista
+        for (TipoBicicleta tipo : TipoBicicleta.values()) {
+            usos.adicionar(new TipoUso(tipo));
         }
 
-        // Recorrer bicicletas en estaciones
-        NodoSE<Estacion> estAct = estaciones.getLista().getInicio();
-        while (estAct != null) {
-            Estacion e = estAct.getDato();
-            NodoSE<Bicicleta> biciAct = e.getAnclajes().getLista().getInicio();
-            while (biciAct != null) {
-                agregarOTipoUso(ranking, biciAct.getDato());
-                biciAct = biciAct.getSiguiente();
+        // Recorrer todas las estaciones y sumar los alquileres
+        NodoSE<Estacion> nodoEst = estaciones.getPrimero();
+        while (nodoEst != null) {
+            Estacion e = nodoEst.getDato();
+            NodoSE<Bicicleta> nodoBici = e.getAnclajes().getLista().getInicio();
+            while (nodoBici != null) {
+                Bicicleta b = nodoBici.getDato();
+                // buscar el tipo correspondiente
+                for (int i = 0; i < usos.longitud(); i++) {
+                    try {
+                        TipoUso tu = usos.obtener(i);
+                        if (tu.getTipo() == b.getTipo()) {
+                            tu.incrementar(b.getVecesAlquilada());
+                            break;
+                        }
+                    } catch (Exception ex) { }
+                }
+                nodoBici = nodoBici.getSiguiente();
             }
-            estAct = estAct.getSiguiente();
+            nodoEst = nodoEst.getSiguiente();
         }
 
-        // Ordenar ranking
-        ordenarListaSE(ranking);
+        // Recorrer depósito también
+        NodoSE<Bicicleta> nodoDep = deposito.getLista().getInicio();
+        while (nodoDep != null) {
+            Bicicleta b = nodoDep.getDato();
+            for (int i = 0; i < usos.longitud(); i++) {
+                try {
+                    TipoUso tu = usos.obtener(i);
+                    if (tu.getTipo() == b.getTipo()) {
+                        tu.incrementar(b.getVecesAlquilada());
+                        break;
+                    }
+                } catch (Exception ex) { }
+            }
+            nodoDep = nodoDep.getSiguiente();
+        }
 
-        // Construir string final
+        // Ordenar lista por cantidad descendente y luego alfabético
+        usos.selectionSort((a, b) -> a.compareTo(b));
+
+        // Construir string de retorno
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < ranking.longitud(); i++) {
-            try {
-                TipoUso t = ranking.obtener(i);
-                if (sb.length() > 0) sb.append("|");
-                sb.append(t.getTipo().name()).append("#").append(t.getCantidadAlquileres());
-            } catch (Exception ex) {}
+        NodoSE<TipoUso> nodoUso = usos.getInicio();
+        while (nodoUso != null) {
+            TipoUso tu = nodoUso.getDato();
+            if (sb.length() > 0) sb.append("|");
+            sb.append(tu.getTipo().name()).append("#").append(tu.getCantidadAlquileres());
+            nodoUso = nodoUso.getSiguiente();
         }
 
         return Retorno.ok(sb.toString());
     }
 
-    // Método auxiliar: agrega o incrementa tipo en ranking
-    private void agregarOTipoUso(ListaSE<TipoUso> ranking, Bicicleta bici) {
-        if (bici == null) return;
-        TipoBicicleta tipo = bici.getTipo();
-        for (int i = 0; i < ranking.longitud(); i++) {
-            try {
-                TipoUso t = ranking.obtener(i);
-                if (t.getTipo() == tipo) {
-                    t.incrementar(bici.getVecesAlquilada());
-                    return;
-                }
-            } catch (Exception e) {}
-        }
-        // Si no existía, agregar nuevo
-        TipoUso nuevo = new TipoUso(tipo);
-        nuevo.incrementar(bici.getVecesAlquilada());
-        ranking.insertar(nuevo, ranking.longitud());
-    }
-
-    // Método auxiliar para ordenar ListaSE según compareTo
-    private <T extends Comparable<T>> void ordenarListaSE(ListaSE<T> lista) {
-        if (lista.vacia() || lista.longitud() == 1) return;
-        for (int i = 0; i < lista.longitud() - 1; i++) {
-            for (int j = i + 1; j < lista.longitud(); j++) {
-                try {
-                    T a = lista.obtener(i);
-                    T b = lista.obtener(j);
-                    if (a.compareTo(b) > 0) {
-                        lista.insertar(b, i);
-                        lista.eliminar(j + 1); // ajustar índice
-                    }
-                } catch (Exception ex) {}
-            }
-        }
-    }
 
 //3.9. Usuarios en espera por alquiler----------------------------- 
-   @Override
+     @Override
     public Retorno usuariosEnEspera(String nombreEstacion) {
+     if (estaciones == null)
+         return Retorno.noImplementada();
 
-        // Buscar estación
-        Estacion est = estaciones.buscar(nombreEstacion);
-        if (est == null) {
-            return Retorno.error1();    // “ERROR” genérico según lo que permite Retorno
-        }
+     Estacion est = estaciones.buscar(nombreEstacion);
+     if (est == null)
+         return Retorno.error1(); // si la estación no existe
 
-        // Obtener cola de espera
-        ColaSE<Usuario> espera = est.getEsperaAlquiler();
+     if (est.getEsperaAlquiler().estaVacia())
+         return Retorno.ok(""); // sin usuarios en espera
 
-        // Si está vacía -> OK pero string vacío
-        if (espera.estaVacia()) {
-            return Retorno.ok("");
-        }
+     // Obtener todos los usuarios en orden de llegada
+     ListaSE<Usuario> listaUsuarios = est.getEsperaAlquiler().obtenerElementos();
+     StringBuilder sb = new StringBuilder();
+     NodoSE<Usuario> nodo = listaUsuarios.getInicio();
+     while (nodo != null) {
+         if (sb.length() > 0) sb.append("|");
+         sb.append(nodo.getDato().getCedula());
+         nodo = nodo.getSiguiente();
+     }
 
-        // Construir string en orden de llegada
-        StringBuilder sb = new StringBuilder();
-        espera.recorrer(u -> {
-            if (sb.length() > 0) sb.append("|");
-            sb.append(u.getCedula());
-        });
+     return Retorno.ok(sb.toString());
+ }
 
-        return Retorno.ok(sb.toString());
-    }
+
 
 
 //3.10. Usuario con mayor cantidad de alquileres

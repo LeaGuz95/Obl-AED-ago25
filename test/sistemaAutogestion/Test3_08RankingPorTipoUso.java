@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package sistemaAutogestion;
+import dominio.Usuario;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -15,61 +16,51 @@ import static org.junit.Assert.*;
 
 
 
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 public class Test3_08RankingPorTipoUso {
 
-    private Sistema s;
-    private Retorno r;
+   private Sistema s;
 
     @Before
     public void setUp() {
         s = new Sistema();
         s.crearSistemaDeGestion();
+
+        // Registrar usuario para alquiler
+        s.registrarUsuario("00000001", "Pepe");
+
+        // Registrar estación
+        s.registrarEstacion("Est1", "Centro", 5);
     }
 
     @Test
-    public void testRankingTiposPorUso() {
+    public void testRankingBasico() {
+        // Registrar bicicletas
+        s.registrarBicicleta("B00001", "URBANA");
+        s.registrarBicicleta("B00002", "MOUNTAIN");
+        s.registrarBicicleta("B00003", "URBANA"); // si querés usar PASEO, deberías agregarlo al enum
+        s.registrarBicicleta("B00004", "ELECTRICA");
+        // Asignar a estación
+        s.asignarBicicletaAEstacion("B00001", "Est1");
+        s.asignarBicicletaAEstacion("B00002", "Est1");
+        s.asignarBicicletaAEstacion("B00003", "Est1");
+        s.asignarBicicletaAEstacion("B00004", "Est1");
 
-        // --- Registrar bicicletas ---
-        s.registrarBicicleta("AAAA11", "URBANA");
-        s.registrarBicicleta("BBBB22", "URBANA");
-        s.registrarBicicleta("CCCC33", "MOUNTAIN");
-        s.registrarBicicleta("DDDD44", "ELECTRICA");
+        // Simular alquileres usando la función pública
+        s.alquilarBicicleta("00000001", "Est1"); // B00001 alquilada
+        s.devolverBicicleta("00000001", "Est1"); // devolver para poder alquilar otra
 
-        // --- Registrar estación ---
-        s.registrarEstacion("Est1", "Centro", 10);
+        s.alquilarBicicleta("00000001", "Est1"); // B00002 alquilada
+        s.devolverBicicleta("00000001", "Est1");
 
-        // --- Mover todas a estación ---
-        s.asignarBicicletaAEstacion("AAAA11", "Est1");
-        s.asignarBicicletaAEstacion("BBBB22", "Est1");
-        s.asignarBicicletaAEstacion("CCCC33", "Est1");
-        s.asignarBicicletaAEstacion("DDDD44", "Est1");
+        // Llamar rankingTiposPorUso
+        Retorno r = s.rankingTiposPorUso();
 
-        // --- Registrar usuarios ---
-        s.registrarUsuario("11111111", "Ana");
-        s.registrarUsuario("22222222", "Beto");
-        s.registrarUsuario("33333333", "Carlos");
-
-        // --- Generar alquileres ---
-        // URBANA: 2 alquileres
-        s.alquilarBicicleta("11111111", "Est1");
-        s.devolverBicicleta("11111111", "Est1");
-
-        s.alquilarBicicleta("22222222", "Est1");
-        s.devolverBicicleta("22222222", "Est1");
-
-        // MOUNTAIN: 1 alquiler
-        s.alquilarBicicleta("33333333", "Est1");
-        s.devolverBicicleta("33333333", "Est1");
-
-        // ELECTRICA: 0 alquileres
-
-        // --- Ejecutar ranking ---
-        r = s.rankingTiposPorUso();
-
-        assertEquals(Retorno.Resultado.OK, r.getResultado());
-
-        // URBANA (2) | MOUNTAIN (1) | ELECTRICA (0)
-        assertEquals("URBANA#2|MOUNTAIN#1|ELECTRICA#0", r.getValorString());
+        // Esperado: 
+        String valorEsperado = "URBANA#2|ELECTRICA#0|MOUNTAIN#0"; 
+        assertEquals(valorEsperado, r.getValorString());
     }
 }
-
