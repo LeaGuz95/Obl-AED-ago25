@@ -10,6 +10,7 @@ import dominio.Usuario;
  * @author ljgp2
  */
 public class ListaUsuarios {
+  
     private ListaSE<Usuario> usuarios;
 
     public ListaUsuarios() {
@@ -30,8 +31,20 @@ public class ListaUsuarios {
     } catch (Exception e) {
         return null;
     }
-}
-
+    }
+    
+   
+    public Usuario buscar(String cedula) {
+        for (int i = 0; i < usuarios.longitud(); i++) {
+           try {
+                Usuario u = usuarios.obtener(i);
+                if (u.getCedula().equals(cedula)) return u;
+           } catch (Exception e) { }
+        }
+        return null;
+    }
+    
+    
     public NodoSE<Usuario> getPrimero() {
         try {
             return usuarios.obtener(0) != null 
@@ -71,15 +84,6 @@ public class ListaUsuarios {
         }
     }
 
-    public Usuario buscar(String cedula) {
-        for (int i = 0; i < usuarios.longitud(); i++) {
-            try {
-                Usuario u = usuarios.obtener(i);
-                if (u.getCedula().equals(cedula)) return u;
-            } catch (Exception e) { }
-        }
-        return null;
-    }
 
   public String listar() {
     StringBuilder sb = new StringBuilder();

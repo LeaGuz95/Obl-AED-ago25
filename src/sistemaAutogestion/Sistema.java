@@ -35,6 +35,18 @@ public class Sistema implements IObligatorio {
     public ListaEstaciones getEstaciones() {
     return estaciones;
     }
+    public ListaUsuarios getUsuarios() {
+    return usuarios;
+    }
+
+    public PilaRetiros getHistorialRetiros() {
+        return historialRetiros;
+    }
+
+    public ListaBarrio getBarrios() {
+        return barrios;
+    }
+    
     //2.1. Crear Sistema de Gestión--------------------------------------
   @Override
     public Retorno crearSistemaDeGestion() {
