@@ -536,31 +536,46 @@ public class Sistema implements IObligatorio {
 //3.5. Listar bicis de estación------------------------
     @Override
     public Retorno listarBicicletasDeEstacion(String nombreEstacion) {
-        // ERROR 1: parámetro inválido
-        if (nombreEstacion == null || nombreEstacion.isEmpty()) {
+        if (nombreEstacion == null || nombreEstacion.isEmpty()) 
             return Retorno.error1();
-        }
 
-        // Buscar estación
         Estacion est = estaciones.buscar(nombreEstacion);
-        if (est == null) {
-            return Retorno.error3(); // si querés usar error3 para "no existe"
-        }
+        if (est == null) 
+            return Retorno.error2();
 
-        // Lista de bicicletas de la estación
         ListaBicicletas anclajes = est.getAnclajes();
+        if (anclajes.estaVacia()) 
+            return Retorno.ok(""); // Devuelve string vacío si no hay bicis
 
-        // Recorrer la lista y armar el string
+        // Recorremos una sola vez y vamos insertando códigos en orden creciente
         StringBuilder sb = new StringBuilder();
         NodoSE<Bicicleta> aux = anclajes.getLista().getInicio();
+
         while (aux != null) {
-            if (sb.length() > 0) sb.append("|");
-            sb.append(aux.getDato().getCodigo());
+            String codigo = aux.getDato().getCodigo();
+
+            if (sb.length() == 0) {
+                sb.append(codigo);
+            } else {
+                // Inserción ordenada en el string
+                String[] partes = sb.toString().split("\\|");
+                int pos = 0;
+                while (pos < partes.length && partes[pos].compareTo(codigo) < 0) {
+                    pos++;
+                }
+
+                StringBuilder nueva = new StringBuilder();
+                for (int i = 0; i < pos; i++) nueva.append(partes[i]).append("|");
+                nueva.append(codigo);
+                for (int i = pos; i < partes.length; i++) nueva.append("|").append(partes[i]);
+                sb = nueva;
+            }
             aux = aux.getSiguiente();
         }
 
         return Retorno.ok(sb.toString());
     }
+
 
 //3.6. Estaciones con disponibilidad mayor ------------------------
    @Override

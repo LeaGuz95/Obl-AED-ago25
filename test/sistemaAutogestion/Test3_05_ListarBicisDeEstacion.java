@@ -63,8 +63,8 @@ public class Test3_05_ListarBicisDeEstacion {
         Sistema s = new Sistema();
         s.crearSistemaDeGestion();
 
-        // No existe estación → ERROR3
+        // No existe estación
         Retorno r = s.listarBicicletasDeEstacion("Est1");
-        assertEquals(Retorno.Resultado.ERROR_3, r.getResultado());
+        assertEquals(Retorno.Resultado.ERROR_2, r.getResultado());
     }
 }
