@@ -17,9 +17,10 @@ import tads.MatrizEstaciones;
 import tads.NodoSE;
 import tads.PilaRetiros;
 
-//version original comentario para saber si publique en git
+
 //Agregar aquí nombres y números de estudiante de los integrantes del equipo
-//Leandro Guzman 321788
+//Leandro Guzman 321788 
+//PARTE 2
 
 public class Sistema implements IObligatorio {
     
@@ -617,43 +618,54 @@ public class Sistema implements IObligatorio {
 //3.7. Ocupación promedio por barrio  ------------------------
   @Override
     public Retorno ocupacionPromedioXBarrio() {
-        if (estaciones.vacia()) {
-            return Retorno.error1();
-        }
+        if (estaciones == null || estaciones.vacia()) return Retorno.error1();
 
-        ListaBarrio listaBarrios = new ListaBarrio();
+        ListaSE<String> barrios = new ListaSE<>();
 
-        // Recorrer estaciones y acumular datos por barrio
-        for (int i = 0; i < estaciones.longitud(); i++) {
-            try {
-                Estacion e = estaciones.obtener(i);
-                listaBarrios.agregarOBuscarYActualizar(
-                    e.getBarrio(),
-                    e.getAnclajes().contar(),
-                    e.getCapacidad()
-                );
-            } catch (Exception ex) {
-                // ignorar errores individuales
-            }
-        }
-
-        listaBarrios.ordenar(); // ordenar alfabéticamente
-
-        // Armar string de salida
-        StringBuilder sb = new StringBuilder();
-        ListaSE<Barrio> barrios = listaBarrios.getLista();
-
-        for (int i = 0; i < barrios.longitud(); i++) {
-            try {
-                Barrio b = barrios.obtener(i);
-                int porcentaje = 0;
-                if (b.getCapacidadTotal() > 0) {
-                    porcentaje = (int) Math.round((double) b.getBicisAncladas() * 100 / b.getCapacidadTotal());
+        // 1. Obtener barrios únicos
+        NodoSE<Estacion> act = estaciones.getPrimero();
+        while (act != null) {
+            String b = act.getDato().getBarrio();
+            boolean existe = false;
+            NodoSE<String> iter = barrios.getInicio();
+            while (iter != null) {
+                if (iter.getDato().equalsIgnoreCase(b)) {
+                    existe = true;
+                    break;
                 }
+                iter = iter.getSiguiente();
+            }
+            if (!existe) barrios.adicionar(b);
+            act = act.getSiguiente();
+        }
 
-                if (sb.length() > 0) sb.append("|");
-                sb.append(b.getNombre()).append("#").append(porcentaje);
-            } catch (Exception ex) {}
+        // 2. Ordenar barrios alfabéticamente
+        barrios.bubbleSort((s1, s2) -> s1.compareToIgnoreCase(s2));
+
+        // 3. Calcular porcentaje por barrio
+        StringBuilder sb = new StringBuilder();
+        NodoSE<String> nodoBarrio = barrios.getInicio();
+        while (nodoBarrio != null) {
+            String barrio = nodoBarrio.getDato();
+            int totalBicis = 0;
+            int totalCapacidad = 0;
+
+            NodoSE<Estacion> aux = estaciones.getPrimero();
+            while (aux != null) {
+                Estacion e = aux.getDato();
+                if (e.getBarrio().equalsIgnoreCase(barrio)) {
+                    totalBicis += e.getAnclajes().contar();
+                    totalCapacidad += e.getCapacidad();
+                }
+                aux = aux.getSiguiente();
+            }
+
+            int porcentaje = (totalCapacidad > 0) ? (int) Math.round((totalBicis * 100.0) / totalCapacidad) : 0;
+
+            if (sb.length() > 0) sb.append("|");
+            sb.append(barrio).append("#").append(porcentaje);
+
+            nodoBarrio = nodoBarrio.getSiguiente();
         }
 
         return Retorno.ok(sb.toString());

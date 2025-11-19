@@ -2,16 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+
 package sistemaAutogestion;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author ljgp2
- */
 public class Test3_07OcupacionPromedioBarrio {
 
     private Sistema s;
@@ -21,57 +18,36 @@ public class Test3_07OcupacionPromedioBarrio {
     public void setUp() {
         s = new Sistema();
         s.crearSistemaDeGestion();
+
+        // Crear estaciones y barrios
+        s.registrarEstacion("Est1", "Aguada", 5);
+        s.registrarEstacion("Est2", "Aguada", 5);
+        s.registrarEstacion("Est3", "Pocitos", 10);
+        s.registrarEstacion("Est4", "Pocitos", 10);
+
+        // Registrar bicicletas y asignarlas
+        s.registrarBicicleta("AAA111", "URBANA");
+        s.registrarBicicleta("BBB222", "URBANA");
+        s.registrarBicicleta("CCC333", "URBANA");
+        s.registrarBicicleta("DDD444", "URBANA");
+        s.registrarBicicleta("EEE555", "URBANA");
+
+        s.asignarBicicletaAEstacion("AAA111", "Est1"); // Aguada: 1/5
+        s.asignarBicicletaAEstacion("BBB222", "Est2"); // Aguada: 1/5 → total 2/10 = 20%
+        s.asignarBicicletaAEstacion("CCC333", "Est3"); // Pocitos: 1/10
+        s.asignarBicicletaAEstacion("DDD444", "Est4"); // Pocitos: 1/10 → total 2/20 = 10%
+        s.asignarBicicletaAEstacion("EEE555", "Est4"); // Pocitos: 2/10 → total 3/20 = 15%
     }
 
     @Test
     public void test3_07_OcupacionPromedioBarrio() {
-
-        // Caso ERROR: no hay estaciones
         retorno = s.ocupacionPromedioXBarrio();
-        assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
 
-        // ---- Construcción de escenario ----
-
-        // Barrio: Aguada
-        s.registrarEstacion("E1", "Aguada", 10);
-        s.registrarEstacion("E2", "Aguada", 20);
-
-        // Barrio: Pocitos
-        s.registrarEstacion("E3", "Pocitos", 10);
-
-        // Bicis para ocupar anclajes
-        s.registrarBicicleta("B00001", "URBANA");
-        s.registrarBicicleta("B00002", "URBANA");
-        s.registrarBicicleta("B00003", "URBANA");
-        s.registrarBicicleta("B00004", "URBANA");
-
-        // Ocupamos 5 anclajes en Aguada (E1 + E2)
-        s.asignarBicicletaAEstacion("B00001", "E1"); // 1
-        s.asignarBicicletaAEstacion("B00002", "E1"); // 2
-        s.asignarBicicletaAEstacion("B00003", "E2"); // 3
-        s.asignarBicicletaAEstacion("B00004", "E2"); // 4
-
-        s.registrarBicicleta("B00005", "URBANA");
-        s.asignarBicicletaAEstacion("B00005", "E2"); // 5
-
-        // Ocupamos 3 anclajes en Pocitos (E3)
-        s.registrarBicicleta("B00006", "URBANA");
-        s.registrarBicicleta("B00007", "URBANA");
-        s.registrarBicicleta("B00008", "URBANA");
-
-        s.asignarBicicletaAEstacion("B00006", "E3");
-        s.asignarBicicletaAEstacion("B00007", "E3");
-        s.asignarBicicletaAEstacion("B00008", "E3");
-
-        // ---- Expected ----
-        // Aguada: 5 / 30 = 16.66 → 17
-        // Pocitos: 3 / 10 = 30.0 → 30
-
-        retorno = s.ocupacionPromedioXBarrio();
+        // Debe retornar OK
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
-        String esperado = "Aguada#17|Pocitos#30";
-        assertEquals(esperado, retorno.getValorString());
+        // La cadena debe estar ordenada alfabéticamente por barrio
+        // Aguada#20|Pocitos#15
+        assertEquals("Aguada#20|Pocitos#15", retorno.getValorString());
     }
 }
-

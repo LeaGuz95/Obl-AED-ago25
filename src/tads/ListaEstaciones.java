@@ -100,6 +100,10 @@ public class ListaEstaciones {
    public boolean vacia() {
     return estaciones.vacia();
 }
+   
+   
+   
+   
 
 }
 
