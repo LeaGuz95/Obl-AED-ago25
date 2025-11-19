@@ -49,10 +49,10 @@ public void setUp() {
 
 @Test
 public void testEstacionesConDisponibilidad() {
-    // Queremos estaciones con más de 2 bicis disponibles
+    // staciones con más de 2 bicis
     retorno = s.estacionesConDisponibilidad(2);
 
-    // Debe retornar OK
+  
     assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
     // Solo Est2 tiene >2 bicis disponibles → valorInt = 1

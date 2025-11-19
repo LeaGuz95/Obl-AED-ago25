@@ -41,7 +41,7 @@ public class Test3_08RankingPorTipoUso {
         // Registrar bicicletas
         s.registrarBicicleta("B00001", "URBANA");
         s.registrarBicicleta("B00002", "MOUNTAIN");
-        s.registrarBicicleta("B00003", "URBANA"); // si querés usar PASEO, deberías agregarlo al enum
+        s.registrarBicicleta("B00003", "URBANA");
         s.registrarBicicleta("B00004", "ELECTRICA");
         // Asignar a estación
         s.asignarBicicletaAEstacion("B00001", "Est1");
@@ -51,7 +51,7 @@ public class Test3_08RankingPorTipoUso {
 
         // Simular alquileres usando la función pública
         s.alquilarBicicleta("00000001", "Est1"); // B00001 alquilada
-        s.devolverBicicleta("00000001", "Est1"); // devolver para poder alquilar otra
+        s.devolverBicicleta("00000001", "Est1"); //Regresar
 
         s.alquilarBicicleta("00000001", "Est1"); // B00002 alquilada
         s.devolverBicicleta("00000001", "Est1");

@@ -140,14 +140,14 @@ public class Test2_10DevolverBicicleta {
         s.registrarBicicleta("B00002", "URBANA");
 
         // Asignar bicis a estaciones
-        s.asignarBicicletaAEstacion("B00001", "EST1"); // EST1 con capacidad 1, ya está llena
-        s.asignarBicicletaAEstacion("B00002", "EST2"); // segunda bici en otra estación
+        s.asignarBicicletaAEstacion("B00001", "EST1"); 
+        s.asignarBicicletaAEstacion("B00002", "EST2"); 
 
         // Usuario alquila la bici de EST2
         retorno = s.alquilarBicicleta("12345678", "EST2");
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
-        // Intento de devolver en EST1 (llena) → usuario debe ir a espera de anclaje
+     
         retorno = s.devolverBicicleta("12345678", "EST1");
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
