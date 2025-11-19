@@ -193,44 +193,35 @@ public class Sistema implements IObligatorio {
     }
 
 //2.7. Eliminar bicicleta----------------------------------------------------
-   @Override
+  @Override
     public Retorno eliminarEstacion(String nombre) {
-
         // 1) Validación de nombre
-        if (nombre == null || nombre.trim().isEmpty()) {
-            return Retorno.error1(); // Nombre inválido
-        }
+        if (nombre == null || nombre.trim().isEmpty())
+            return Retorno.error1();
 
+        // 2) Buscar estación
         Estacion est = estaciones.buscar(nombre);
-        if (est == null) {
-            return Retorno.error2(); // Estación inexistente
-        }
+        if (est == null) return Retorno.error2();
 
-        // 2) No debe tener bicicletas ancladas
-        if (est.getAnclajes().contar() > 0) {
-            return Retorno.error3(); // Tiene bicicletas ancladas
-        }
-
-        // 3) No debe tener usuarios en cola de espera
-        if (est.getEsperaAlquiler() != null && !est.getEsperaAlquiler().estaVacia()) {
-            return Retorno.error3(); // También ERROR_3 según letra
+        // 3) Validar que no tenga bicicletas ni usuarios en espera
+        if (est.getAnclajes().contar() > 0 || 
+            (est.getEsperaAlquiler() != null && !est.getEsperaAlquiler().estaVacia())) {
+            return Retorno.error3();
         }
 
         // 4) Eliminar estación de la lista
-        ListaSE<Estacion> lista = estaciones.getLista();
-
-        for (int i = 0; i < lista.longitud(); i++) {
+        for (int i = 0; i < estaciones.longitud(); i++) {
             try {
-                if (lista.obtener(i).getNombre().equalsIgnoreCase(nombre)) {
-                    lista.eliminar(i);
+                if (estaciones.obtener(i).getNombre().equalsIgnoreCase(nombre)) {
+                    estaciones.getLista().eliminar(i);
                     return Retorno.ok();
                 }
             } catch (Exception e) {
-                // ignorar, tu ListaSE lanza excepciones por índice
+              
             }
         }
 
-      
+        // si no se pudo eliminar, devolver ERROR_2
         return Retorno.error2();
     }
 
@@ -331,6 +322,10 @@ public class Sistema implements IObligatorio {
             // Incrementar contador de veces alquilada
             disponible.setVecesAlquilada(disponible.getVecesAlquilada() + 1);
 
+            
+                // Registrar retiro en el historial
+            Retiro r = new Retiro(disponible, u, est);
+            historialRetiros.apilar(r);
             return Retorno.ok();
         }
 
@@ -341,55 +336,55 @@ public class Sistema implements IObligatorio {
 
 //2.10. Devolver bicicleta -----------------------------------
   @Override
-public Retorno devolverBicicleta(String cedula, String nombreEstacionDestino) {
-    // ERROR 1: parámetros inválidos
-    if (cedula == null || cedula.isEmpty() ||
-        nombreEstacionDestino == null || nombreEstacionDestino.isEmpty()) {
-        return Retorno.error1();
-    }
-
-    // Buscar estación destino primero
-    Estacion destino = estaciones.buscar(nombreEstacionDestino);
-    if (destino == null) {
-        return Retorno.error3();
-    }
-
-    // Buscar usuario
-    Usuario u = usuarios.buscar(cedula);
-    if (u == null || u.getBicicletaActual() == null) {
-        return Retorno.error2();
-    }
-
-    Bicicleta bici = u.getBicicletaActual();
-
-    if (destino.hayLugar()) {
-        // Si hay lugar, anclar la bici
-        destino.anclarBicicleta(bici);
-        bici.setEstado(EstadoBicicleta.Disponible);
-        u.setBicicletaActual(null);
-
-        // Entregar automáticamente a usuarios en espera de alquiler
-        while (!destino.getEsperaAlquiler().estaVacia() && destino.cantidadDisponibles() > 0) {
-            Usuario primerUsuario = destino.getEsperaAlquiler().desencolar();
-            Bicicleta biciParaAlquilar = destino.getAnclajes().buscarDisponible();
-            if (biciParaAlquilar != null) {
-                destino.getAnclajes().sacar(biciParaAlquilar.getCodigo());
-                biciParaAlquilar.setEstado(EstadoBicicleta.Alquilada);
-                primerUsuario.setBicicletaActual(biciParaAlquilar);
-                biciParaAlquilar.setVecesAlquilada(biciParaAlquilar.getVecesAlquilada() + 1);
-            }
+    public Retorno devolverBicicleta(String cedula, String nombreEstacionDestino) {
+        // ERROR 1: parámetros inválidos
+        if (cedula == null || cedula.isEmpty() ||
+            nombreEstacionDestino == null || nombreEstacionDestino.isEmpty()) {
+            return Retorno.error1();
         }
-    } else {
-        // Si no hay lugar → usuario queda en espera de anclaje
-        destino.getEsperaAnclaje().encolar(u);
-         u.setBicicletaActual(null); 
-        // Mantener la bici “temporalmente” con el usuario hasta que pueda anclarla
-        // u.getBicicletaActual() sigue siendo bici
+
+        // Buscar estación destino primero
+        Estacion destino = estaciones.buscar(nombreEstacionDestino);
+        if (destino == null) {
+            return Retorno.error3();
+        }
+
+        // Buscar usuario
+        Usuario u = usuarios.buscar(cedula);
+        if (u == null || u.getBicicletaActual() == null) {
+            return Retorno.error2();
+        }
+
+        Bicicleta bici = u.getBicicletaActual();
+
+        if (destino.hayLugar()) {
+            // Si hay lugar, anclar la bici
+            destino.anclarBicicleta(bici);
+            bici.setEstado(EstadoBicicleta.Disponible);
+            u.setBicicletaActual(null);
+
+            // Entregar automáticamente a usuarios en espera de alquiler
+            while (!destino.getEsperaAlquiler().estaVacia() && destino.cantidadDisponibles() > 0) {
+                Usuario primerUsuario = destino.getEsperaAlquiler().desencolar();
+                Bicicleta biciParaAlquilar = destino.getAnclajes().buscarDisponible();
+                if (biciParaAlquilar != null) {
+                    destino.getAnclajes().sacar(biciParaAlquilar.getCodigo());
+                    biciParaAlquilar.setEstado(EstadoBicicleta.Alquilada);
+                    primerUsuario.setBicicletaActual(biciParaAlquilar);
+                    biciParaAlquilar.setVecesAlquilada(biciParaAlquilar.getVecesAlquilada() + 1);
+                }
+            }
+        } else {
+            // Si no hay lugar → usuario queda en espera de anclaje
+            destino.getEsperaAnclaje().encolar(u);
+             u.setBicicletaActual(null); 
+            // Mantener la bici “temporalmente” con el usuario hasta que pueda anclarla
+            // u.getBicicletaActual() sigue siendo bici
+            return Retorno.ok();
+        }
+
         return Retorno.ok();
     }
-
-    return Retorno.ok();
-}
 
 
 
@@ -401,7 +396,7 @@ public Retorno devolverBicicleta(String cedula, String nombreEstacionDestino) {
             return Retorno.error1();
 
         if (historialRetiros.estaVacia())
-            return Retorno.error2();  // si tenés un error para "no hay retiros"
+            return Retorno.error2();  
 
         StringBuilder sb = new StringBuilder();
 
@@ -418,9 +413,9 @@ public Retorno devolverBicicleta(String cedula, String nombreEstacionDestino) {
 
             // devolver bici a estación de origen
             if (origen.hayLugar()) {
-                origen.getAnclajes().insertarOrdenado(bici);// <<--- CORRECTO
+                origen.getAnclajes().insertarOrdenado(bici);
             } else {
-                origen.getEsperaAnclajeBici().encolar(bici);   // <<--- CORRECCIÓN CLAVE
+                origen.getEsperaAnclajeBici().encolar(bici);  
             }
 
             // revertir alquiler

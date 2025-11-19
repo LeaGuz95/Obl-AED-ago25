@@ -20,34 +20,34 @@ public class Test2_11DeshacerUltimosRetiros {
     private Retorno retorno;
 
     @Before
-    public void setUp() {
-        s = new Sistema();
-        s.crearSistemaDeGestion();
+public void setUp() {
+    s = new Sistema();
+    s.crearSistemaDeGestion();
 
-        // Estaciones
-        s.registrarEstacion("EST1", "Centro", 3);
-        s.registrarEstacion("EST2", "Cordón", 2);
+    // Estaciones
+    s.registrarEstacion("EST1", "Centro", 3);
+    s.registrarEstacion("EST2", "Cordón", 2);
 
-        // Bicicletas en depósito
-        s.registrarBicicleta("B001", "URBANA");
-        s.registrarBicicleta("B002", "URBANA");
-        s.registrarBicicleta("B003", "URBANA");
+    // Bicicletas en depósito (6 caracteres)
+    s.registrarBicicleta("B00001", "URBANA");
+    s.registrarBicicleta("B00002", "URBANA");
+    s.registrarBicicleta("B00003", "URBANA");
 
-        // Usuarios
-        s.registrarUsuario("100", "Ana");
-        s.registrarUsuario("200", "Luis");
-        s.registrarUsuario("300", "Sara");
+    // Usuarios (8 dígitos)
+    s.registrarUsuario("10000001", "Ana");
+    s.registrarUsuario("20000002", "Luis");
+    s.registrarUsuario("30000003", "Sara");
 
-        // Asignar bicis a EST1 para poder alquilar
-        s.asignarBicicletaAEstacion("B001", "EST1");
-        s.asignarBicicletaAEstacion("B002", "EST1");
-        s.asignarBicicletaAEstacion("B003", "EST1");
+    // Asignar bicis a EST1 para poder alquilar
+    s.asignarBicicletaAEstacion("B00001", "EST1");
+    s.asignarBicicletaAEstacion("B00002", "EST1");
+    s.asignarBicicletaAEstacion("B00003", "EST1");
 
-        // Generar RETIROS (quedan en historial)
-        s.alquilarBicicleta("100", "EST1"); // Retiro 1
-        s.alquilarBicicleta("200", "EST1"); // Retiro 2
-        s.alquilarBicicleta("300", "EST1"); // Retiro 3
-    }
+    // Generar RETIROS (quedan en historial)
+    s.alquilarBicicleta("10000001", "EST1"); // Retiro 1
+    s.alquilarBicicleta("20000002", "EST1"); // Retiro 2
+    s.alquilarBicicleta("30000003", "EST1"); // Retiro 3
+}
 
     @Test
     public void deshacerRetirosError1() {
@@ -57,34 +57,44 @@ public class Test2_11DeshacerUltimosRetiros {
         retorno = s.deshacerUltimosRetiros(-10);
         assertEquals(Retorno.Resultado.ERROR_1, retorno.getResultado());
     }
-
+//ERROR
     @Test
-    public void deshacerRetirosOK_2() {
-        retorno = s.deshacerUltimosRetiros(2);
+  public void deshacerRetirosOK_2() {
+      // Deshacer los últimos 2 retiros (Sara y Luis)
+      retorno = s.deshacerUltimosRetiros(2);
 
-        assertEquals(Retorno.Resultado.OK, retorno.getResultado());
+      assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
-        // Se deshacen los últimos 2 retiros: primero Sara, luego Luis
-        assertEquals("B003#300#EST1|B002#200#EST1", retorno.getValorString());
+      // Se deshacen los últimos 2 retiros: primero Sara, luego Luis
+      String esperado = "B00003#30000003#EST1|B00002#20000002#EST1";
+      assertEquals(esperado, retorno.getValorString());
 
-        // Validación básica: usuarios sin bici
-        Usuario u1 = s.getUsuarios().buscar("300");
-        Usuario u2 = s.getUsuarios().buscar("200");
+      // Validación básica: usuarios sin bici
+      Usuario uSara = s.getUsuarios().buscar("30000003");
+      Usuario uLuis = s.getUsuarios().buscar("20000002");
 
-        assertNull(u1.getBicicletaActual());
-        assertNull(u2.getBicicletaActual());
-    }
+      assertNull(uSara.getBicicletaActual());
+      assertNull(uLuis.getBicicletaActual());
+
+      // Ana todavía tiene su bici
+      Usuario uAna = s.getUsuarios().buscar("10000001");
+      assertNotNull(uAna.getBicicletaActual());
+  }
 
     @Test
     public void deshacerRetirosOK_TodosLosDisponibles() {
+        // Pedimos más retiros que los disponibles, debe deshacer todos los existentes
         retorno = s.deshacerUltimosRetiros(10); // hay solo 3
 
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
-        // Deben aparecer los 3 retiros en orden LIFO
-        assertEquals(
-            "B003#300#EST1|B002#200#EST1|B001#100#EST1",
-            retorno.getValorString()
-        );
+        // Deben aparecer los 3 retiros en orden LIFO: último retirado primero
+        String esperado = "B00003#30000003#EST1|B00002#20000002#EST1|B00001#10000001#EST1";
+        assertEquals(esperado, retorno.getValorString());
+
+        // Todos los usuarios quedan sin bici
+        assertNull(s.getUsuarios().buscar("10000001").getBicicletaActual());
+        assertNull(s.getUsuarios().buscar("20000002").getBicicletaActual());
+        assertNull(s.getUsuarios().buscar("30000003").getBicicletaActual());
     }
 }

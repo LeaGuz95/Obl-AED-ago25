@@ -43,17 +43,19 @@ public class Test2_07EliminarEstacion {
         retorno = s.eliminarEstacion("NOEXISTE");
         assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
     }
-//ERROR
+
     @Test
     public void eliminarEstacionError3_BicicletasEnAnclajes() {
         // registrar bici y asignarla a la estación (anclar)
-        s.registrarBicicleta("B001", "URBANA");
-        // usar el método de la interfaz para asignar a estación
-        retorno = s.asignarBicicletaAEstacion("B001", "EST1");
-        // si asignar no está implementado, este retorno podrá ser NO_IMPLEMENTADA
-        // el test asume que la asignación fue OK
+        s.registrarBicicleta("B00001", "URBANA");
+
+        // NO registrar usuarios, así la bici permanece anclada
+        retorno = s.asignarBicicletaAEstacion("B00001", "EST1");
+
+        // verificar que la asignación fue OK
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
+        // eliminar la estación debería fallar porque tiene bicicletas ancladas
         retorno = s.eliminarEstacion("EST1");
         assertEquals(Retorno.Resultado.ERROR_3, retorno.getResultado());
     }
