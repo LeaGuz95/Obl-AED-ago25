@@ -230,71 +230,58 @@ public class Sistema implements IObligatorio {
             }
         }
 
-        // fallback improbable
+      
         return Retorno.error2();
     }
 
 
 //2.8. Asignar bicicleta a estación ----------------------------------------------------
-    @Override
+   @Override
     public Retorno asignarBicicletaAEstacion(String codigo, String nombreEstacion) {
 
-        // ERROR 1: parámetros inválidos
-        if (codigo == null || codigo.isEmpty() ||
-            nombreEstacion == null || nombreEstacion.isEmpty()) {
+        if (codigo == null || codigo.isEmpty() || nombreEstacion == null || nombreEstacion.isEmpty()) {
             return Retorno.error1();
         }
 
-        // Buscar bicicleta
-        Bicicleta bici = deposito.buscar(codigo);
+        Bicicleta bici = deposito.buscar(codigo); // buscar en depósito
         Estacion estacionActual = null;
 
-        // Si no está en el depósito, buscar en estaciones
-        if (bici == null) {
-            ListaSE<Estacion> lista = estaciones.getLista();
-            for (int i = 0; i < lista.longitud(); i++) {
+        if (bici == null) { 
+            // buscar en estaciones
+            for (int i = 0; i < estaciones.longitud(); i++) {
                 try {
-                    Estacion e = lista.obtener(i);
-                    if (e.buscarBicicleta(codigo) != null) {
+                    Estacion e = estaciones.obtener(i);
+                    Bicicleta b = e.buscarBicicleta(codigo);
+                    if (b != null && b.getEstado() == EstadoBicicleta.Disponible) {
+                        bici = b;
                         estacionActual = e;
-                        bici = e.buscarBicicleta(codigo);
                         break;
                     }
-                } catch (Exception ex) { }
+                } catch (Exception ex) {
+                    // ignorar, ya que ListaSE lanza excepción si i es inválido
+                }
             }
         }
 
-        // ERROR 2: bici no existe o no está disponible
+
         if (bici == null || bici.getEstado() != EstadoBicicleta.Disponible) {
             return Retorno.error2();
         }
 
-        // Buscar estación destino
         Estacion destino = estaciones.buscar(nombreEstacion);
+        if (destino == null) return Retorno.error3();
+        if (!destino.hayLugar()) return Retorno.error4();
 
-        // ERROR 3: estación no existe
-        if (destino == null) {
-            return Retorno.error3();
-        }
-
-        // ERROR 4: sin espacio
-        if (!destino.hayLugar()) {
-            return Retorno.error4();
-        }
-
-        // Si la bici está en otra estación → removerla de allí
         if (estacionActual != null) {
             estacionActual.sacarBicicleta(codigo);
         } else {
-            // Si estaba en depósito → sacarla del depósito
             deposito.sacar(codigo);
         }
 
-        // Finalmente anclar en estación destino
         destino.anclarBicicleta(bici);
-
         return Retorno.ok();
     }
+
 
 //2.9. Alquilar bicicleta ------
     @Override

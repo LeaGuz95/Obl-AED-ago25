@@ -26,12 +26,13 @@ public class Test2_09AlquilarBicicleta {
         s.registrarEstacion("EST1", "Centro", 2);
 
         // Usuarios comunes
-        s.registrarUsuario("111", "Juan");
-        s.registrarUsuario("222", "Ana");
+        s.registrarUsuario("12345678", "Juan");
+        s.registrarUsuario("87654321", "Ana");
+
 
         // Bicicletas comunes
-        s.registrarBicicleta("B001", "URBANA");
-        s.registrarBicicleta("B002", "MOUNTAIN");
+        s.registrarBicicleta("B00001", "URBANA");
+        s.registrarBicicleta("B00002", "MOUNTAIN");
 
         // Para algunos tests será necesario asignarlas
     }
@@ -40,20 +41,21 @@ public class Test2_09AlquilarBicicleta {
     // TESTS
     // ------------------------------------------------------------------------
 //ARREGLAR
-    @Test
+   @Test
     public void alquilarBicicleta_Exito() {
         // Preparar: asignar bici a estación
-        s.asignarBicicletaAEstacion("B001", "EST1");
+        s.asignarBicicletaAEstacion("B00001", "EST1");
 
-        retorno = s.alquilarBicicleta("111", "EST1");
+        // Usar usuario válido
+        retorno = s.alquilarBicicleta("12345678", "EST1");
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
         // Usuario debe tener la bici
-        assertNotNull(s.getUsuarios().buscar("111").getBicicletaActual());
-        assertEquals("B001", s.getUsuarios().buscar("111").getBicicletaActual().getCodigo());
+        assertNotNull(s.getUsuarios().buscar("12345678").getBicicletaActual());
+        assertEquals("B00001", s.getUsuarios().buscar("12345678").getBicicletaActual().getCodigo());
 
         // La bici ya no debe estar en anclajes
-        assertNull(s.getEstaciones().buscar("EST1").getAnclajes().buscar("B001"));
+        assertNull(s.getEstaciones().buscar("EST1").getAnclajes().buscar("B00001"));
     }
 
     @Test
@@ -76,64 +78,60 @@ public class Test2_09AlquilarBicicleta {
         retorno = s.alquilarBicicleta("999", "EST1");
         assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
     }
-//ARREGLAR
-    @Test
+
+   @Test
     public void alquilarBicicleta_Error3_EstacionNoExiste() {
-        retorno = s.alquilarBicicleta("111", "NOEXISTE");
+        retorno = s.alquilarBicicleta("12345678", "NOEXISTE");
         assertEquals(Retorno.Resultado.ERROR_3, retorno.getResultado());
     }
-//ARREGLAR
     @Test
     public void alquilarBicicleta_SinBicicletas_UsuarioEnCola() {
         // No asignamos ninguna bici → no hay disponibles
-        retorno = s.alquilarBicicleta("111", "EST1");
+        retorno = s.alquilarBicicleta("12345678", "EST1");
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
         // Debe haber quedado en la cola
         assertEquals(1, s.getEstaciones().buscar("EST1").getEsperaAlquiler().longitud());
 
         // Usuario NO debe tener bicicleta
-        assertNull(s.getUsuarios().buscar("111").getBicicletaActual());
+        assertNull(s.getUsuarios().buscar("12345678").getBicicletaActual());
     }
-//ARREGLAR
+
     @Test
     public void alquilarBicicleta_ColaYAsignacionPosterior() {
         // 1) Juan pide bici → no hay → queda en cola
-        retorno = s.alquilarBicicleta("111", "EST1");
+        retorno = s.alquilarBicicleta("12345678", "EST1");
         assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
         // 2) Luego llega una bicicleta a la estación
-        s.asignarBicicletaAEstacion("B001", "EST1");
+        s.asignarBicicletaAEstacion("B00001", "EST1");
 
-        // Como hay alguien esperando, debería entregarse automáticamente
-        // (si tu implementación hace esto en asignarBicicletaAEstacion)
-        // o debería entregarse recién cuando se llame a alquilarBicicleta nuevamente.
-        // Para este test se asume que asignar entrega automáticamente.
-
-        assertNotNull(s.getUsuarios().buscar("111").getBicicletaActual());
-        assertEquals("B001", s.getUsuarios().buscar("111").getBicicletaActual().getCodigo());
+        // Debe entregarse automáticamente
+        assertNotNull(s.getUsuarios().buscar("12345678").getBicicletaActual());
+        assertEquals("B00001", s.getUsuarios().buscar("12345678").getBicicletaActual().getCodigo());
 
         // La cola debe quedar vacía
         assertEquals(0, s.getEstaciones().buscar("EST1").getEsperaAlquiler().longitud());
     }
-//ARREGLAR
+
     @Test
     public void alquilarBicicleta_ColaDosUsuarios_RespetaOrden() {
-        // Juan pide → queda en cola
-        s.alquilarBicicleta("111", "EST1");
+        // Juan queda primero en la cola
+        s.alquilarBicicleta("12345678", "EST1");
 
-        // Ana pide → queda en cola detrás de Juan
-        s.alquilarBicicleta("222", "EST1");
+        // Ana queda detrás
+        s.alquilarBicicleta("87654321", "EST1");
 
-        // Llega bici y se asigna al primero en la cola → Juan
-        s.asignarBicicletaAEstacion("B001", "EST1");
+        // Primera bici llega → es para Juan
+        s.asignarBicicletaAEstacion("B00001", "EST1");
 
-        assertEquals("B001", s.getUsuarios().buscar("111").getBicicletaActual().getCodigo());
-        assertNull(s.getUsuarios().buscar("222").getBicicletaActual());
+        assertEquals("B00001", s.getUsuarios().buscar("12345678").getBicicletaActual().getCodigo());
+        assertNull(s.getUsuarios().buscar("87654321").getBicicletaActual());
 
-        // Llega otra bici → Ana la recibe
-        s.asignarBicicletaAEstacion("B002", "EST1");
+        // Segunda bici llega → ahora Ana
+        s.asignarBicicletaAEstacion("B00002", "EST1");
 
-        assertEquals("B002", s.getUsuarios().buscar("222").getBicicletaActual().getCodigo());
+        assertEquals("B00002", s.getUsuarios().buscar("87654321").getBicicletaActual().getCodigo());
     }
+
 }

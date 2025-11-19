@@ -28,9 +28,10 @@ public class Test2_08AsignarBicicletaEstacion {
         s.registrarEstacion("EST2", "Cordón", 1);
 
         // Bicicletas comunes para pruebas
-        s.registrarBicicleta("B001", "URBANA");
-        s.registrarBicicleta("B002", "MOUNTAIN");
-        s.registrarBicicleta("B003", "URBANA");
+        s.registrarBicicleta("B00001", "URBANA");
+        s.registrarBicicleta("B00002", "MOUNTAIN");
+        s.registrarBicicleta("B00003", "URBANA");
+
     }
 
     // -------------------------------
@@ -81,7 +82,7 @@ public class Test2_08AsignarBicicletaEstacion {
         retorno = s.asignarBicicletaAEstacion("B001", "NOEXISTE");
         assertEquals(Retorno.Resultado.ERROR_3, retorno.getResultado());
     }
-
+//arreglar
     @Test
     public void asignarBicicleta_Error4_SinAnclajesLibres() {
         // EST2 solo tiene 1 anclaje

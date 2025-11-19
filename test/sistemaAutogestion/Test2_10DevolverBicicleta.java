@@ -27,8 +27,8 @@ public class Test2_10DevolverBicicleta {
         s.registrarEstacion("EST2", "Cordón", 2);
 
         // Bicis
-        s.registrarBicicleta("B001", "URBANA");
-        s.registrarBicicleta("B002", "MOUNTAIN");
+        s.registrarBicicleta("B00001", "URBANA");
+        s.registrarBicicleta("B00002", "MOUNTAIN");
 
         // Usuarios
         s.registrarUsuario("100", "Ana");
@@ -69,7 +69,7 @@ public class Test2_10DevolverBicicleta {
     @Test
     public void devolverBicicletaOK_Simple() {
         // Preparar: poner bici y alquilarla
-        s.asignarBicicletaAEstacion("B001", "EST1");
+        s.asignarBicicletaAEstacion("B00001", "EST1");
         s.alquilarBicicleta("100", "EST1");
 
         // Devolverla

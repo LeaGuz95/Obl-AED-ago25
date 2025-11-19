@@ -43,7 +43,7 @@ public class Test2_07EliminarEstacion {
         retorno = s.eliminarEstacion("NOEXISTE");
         assertEquals(Retorno.Resultado.ERROR_2, retorno.getResultado());
     }
-
+//ERROR
     @Test
     public void eliminarEstacionError3_BicicletasEnAnclajes() {
         // registrar bici y asignarla a la estación (anclar)
