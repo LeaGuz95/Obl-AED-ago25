@@ -18,13 +18,13 @@ public class Bicicleta implements Comparable<Bicicleta> {
 
 
     // Constructor
-    public Bicicleta(String codigo, TipoBicicleta tipo,int vecesAlquilada) {
+    public Bicicleta(String codigo, TipoBicicleta tipo) {
         this.codigo = codigo;
         this.tipo = tipo;
         this.enDeposito = true; 
         this.estado = EstadoBicicleta.Disponible; 
         this.motivoMantenimiento = null; 
-        this.vecesAlquilada = vecesAlquilada;
+        this.vecesAlquilada = 0;
     }
 
     // Getters
@@ -55,6 +55,10 @@ public class Bicicleta implements Comparable<Bicicleta> {
     public void setEnDeposito(boolean enDeposito) {
         this.enDeposito = enDeposito;
     }
+    
+    public void setVecesAlquilada(int vecesAlquilada) {
+    this.vecesAlquilada = vecesAlquilada;
+}
 
     public void setEstado(EstadoBicicleta estado) {
         this.estado = estado;

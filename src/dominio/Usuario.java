@@ -11,29 +11,33 @@ package dominio;
 public class Usuario implements Comparable<Usuario> {
     private String cedula;
     private String nombre;
-    private int cantidadAlquileres;
+    private int cantidadAlquileres; 
     private Bicicleta bicicletaActual; 
 
     public Usuario(String cedula, String nombre) {
         this.cedula = cedula;
         this.nombre = nombre;
-         this.cantidadAlquileres = 0; 
-          this.bicicletaActual = null;
+        this.cantidadAlquileres = 0; 
+        this.bicicletaActual = null;
     }
 
     public String getCedula() { return cedula; }
     public String getNombre() { return nombre; }
-    public Bicicleta getBicicletaActual() {
-    return bicicletaActual;
-}
+    public int getCantidadAlquileres() { return cantidadAlquileres; }
+    public Bicicleta getBicicletaActual() { return bicicletaActual; }
 
-public void setBicicletaActual(Bicicleta bicicletaActual) {
-    this.bicicletaActual = bicicletaActual;
-}
+    public void setBicicletaActual(Bicicleta bicicletaActual) {
+        this.bicicletaActual = bicicletaActual;
+    }
+
+    // Método para incrementar la cantidad de alquileres
+    public void sumarAlquiler() {
+        cantidadAlquileres++;
+    }
+
     @Override
     public int compareTo(Usuario otro) {
- 
-        return this.cedula.compareTo(otro.cedula);
+        return this.cedula.compareTo(otro.cedula); // orden por cédula
     }
 
     @Override

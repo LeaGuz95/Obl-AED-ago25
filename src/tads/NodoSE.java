@@ -22,6 +22,7 @@ public class NodoSE<T> {
         this.siguiente = null;
     }
 
+
      public T getDato() {
         return dato;
     }
