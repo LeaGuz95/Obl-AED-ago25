@@ -705,12 +705,22 @@ public class Sistema implements IObligatorio {
 //3.9. Usuarios en espera por alquiler----------------------------- 
    @Override
     public Retorno usuariosEnEspera(String nombreEstacion) {
+
+        // Buscar estación
         Estacion est = estaciones.buscar(nombreEstacion);
-        if (est == null) return Retorno.error3();
+        if (est == null) {
+            return Retorno.error1();    // “ERROR” genérico según lo que permite Retorno
+        }
 
+        // Obtener cola de espera
         ColaSE<Usuario> espera = est.getEsperaAlquiler();
-        if (espera.estaVacia()) return Retorno.ok(""); // ningún usuario en espera
 
+        // Si está vacía -> OK pero string vacío
+        if (espera.estaVacia()) {
+            return Retorno.ok("");
+        }
+
+        // Construir string en orden de llegada
         StringBuilder sb = new StringBuilder();
         espera.recorrer(u -> {
             if (sb.length() > 0) sb.append("|");
@@ -719,6 +729,7 @@ public class Sistema implements IObligatorio {
 
         return Retorno.ok(sb.toString());
     }
+
 
 //3.10. Usuario con mayor cantidad de alquileres
 
