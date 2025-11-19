@@ -269,21 +269,36 @@ public class Sistema implements IObligatorio {
          }
 
         // Anclar en destino y actualizar estado/estación
+        destino.anclarBicicleta(bici);
         bici.setEstado(EstadoBicicleta.Disponible);
         bici.setEstacionActual(destino);
-        destino.anclarBicicleta(bici);
-   
-        // Después de anclar la bici
-    if (!destino.getEsperaAlquiler().estaVacia() && bici.getEstado() == EstadoBicicleta.Disponible) {
-        Usuario primerUsuario = destino.getEsperaAlquiler().desencolar();
-        destino.getAnclajes().sacar(bici.getCodigo());
-      //  bici.setEstado(EstadoBicicleta.Alquilada);
-        primerUsuario.setBicicletaActual(bici);
-        bici.setVecesAlquilada(bici.getVecesAlquilada() + 1);
-    }
+
+       entregarBicisAEspereUsuarios(destino);
+
+
 
             
         return Retorno.ok();
+    }
+
+        // Entregar bicicletas disponibles a usuarios en espera de alquiler
+    private void entregarBicisAEspereUsuarios(Estacion destino) {
+        while (!destino.getEsperaAlquiler().estaVacia()) {
+            // Buscar la primera bici disponible
+            Bicicleta biciDisponible = destino.getAnclajes().buscarDisponible();
+            if (biciDisponible == null) break; // No hay más bicis disponibles
+
+            // Tomar el primer usuario de la cola
+            Usuario usuarioEnEspera = destino.getEsperaAlquiler().desencolar();
+
+            // Asignar la bicicleta
+            destino.getAnclajes().sacar(biciDisponible.getCodigo());
+            biciDisponible.setEstado(EstadoBicicleta.Alquilada);
+            usuarioEnEspera.setBicicletaActual(biciDisponible);
+
+            // Incrementar contador de veces alquilada
+            biciDisponible.setVecesAlquilada(biciDisponible.getVecesAlquilada() + 1);
+        }
     }
 
 
@@ -580,22 +595,23 @@ public class Sistema implements IObligatorio {
 //3.6. Estaciones con disponibilidad mayor ------------------------
   @Override
     public Retorno estacionesConDisponibilidad(int n) {
-        if (n <= 1)
-            return Retorno.error1();
+    if (n <= 1)
+        return Retorno.error1();
 
-        int contador = 0;
-        NodoSE<Estacion> act = estaciones.getPrimero();
+    int contador = 0;
+    NodoSE<Estacion> act = estaciones.getPrimero();
 
-        while (act != null) {
-            Estacion e = act.getDato();
-            if (e.cantidadDisponibles() > n)
-                contador++;
-
-            act = act.getSiguiente();
-        }
-
-        return Retorno.ok(contador);
+    while (act != null) {
+        Estacion e = act.getDato();
+        // contar solo si la estación tiene más de n bicis disponibles
+        if (e.cantidadDisponibles() > n)
+            contador++;
+        act = act.getSiguiente();
     }
+
+    return Retorno.ok(contador); // valorInt = cantidad de estaciones
+}
+
 
 
 //3.7. Ocupación promedio por barrio  ------------------------

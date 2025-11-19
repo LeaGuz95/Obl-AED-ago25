@@ -82,7 +82,7 @@ public class ListaBicicletas {
     }
 
     // --- ESTA ERA LA PARTE ROTA ---
-    // Recorremos por ListaSE en vez de usar "primero"
+
     public Bicicleta buscarDisponible() {
         for (int i = 0; i < bicicletas.longitud(); i++) {
             try {
@@ -93,18 +93,16 @@ public class ListaBicicletas {
         }
         return null;
     }
-//BORRAR
-    public int cantidadDisponibles() {
-    int c = 0;
-    NodoSE<Bicicleta> act = this.getLista().getInicio(); // o getInicio(), según tu implementación
 
+   public int cantidadDisponibles() {
+    int c = 0;
+    NodoSE<Bicicleta> act = this.getLista().getInicio(); 
     while (act != null) {
         Bicicleta b = act.getDato();
         if (b.getEstado() == EstadoBicicleta.Disponible)
             c++;
         act = act.getSiguiente();
     }
-
     return c;
 }
 

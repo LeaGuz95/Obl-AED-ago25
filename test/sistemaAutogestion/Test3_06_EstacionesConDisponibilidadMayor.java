@@ -8,50 +8,58 @@ package sistemaAutogestion;
  *
  * @author ljgp2
  */
+import dominio.Estacion;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import tads.NodoSE;
 
 public class Test3_06_EstacionesConDisponibilidadMayor {
 
     private Sistema s;
+    private Retorno retorno;
 
-    @Before
-    public void setUp() {
-        s = new Sistema();
-        s.crearSistemaDeGestion();
+@Before
+public void setUp() {
+    s = new Sistema();
+    s.crearSistemaDeGestion();
 
-        // Crear estaciones
-        s.registrarEstacion("Est1", "Centro", 5);   // capacidad 5
-        s.registrarEstacion("Est2", "Cordón", 10);  // capacidad 10
-        s.registrarEstacion("Est3", "Tres Cruces", 3); // capacidad 3
+    // Crear estaciones
+    s.registrarEstacion("Est1", "Centro", 5);
+    s.registrarEstacion("Est2", "Cordón", 10);
+    s.registrarEstacion("Est3", "Tres Cruces", 3);
 
-        // Registrar bicicletas
-        s.registrarBicicleta("AAA111", "URBANA");
-        s.registrarBicicleta("BBB222", "URBANA");
-        s.registrarBicicleta("CCC333", "URBANA");
-        s.registrarBicicleta("DDD444", "URBANA");
+    // Registrar bicicletas
+    s.registrarBicicleta("AAA111", "URBANA");
+    s.registrarBicicleta("BBB222", "URBANA");
+    s.registrarBicicleta("CCC333", "URBANA");
+    s.registrarBicicleta("DDD444", "URBANA");
 
-        // Asignar bicicletas a estaciones
-        s.asignarBicicletaAEstacion("AAA111", "Est1"); // Est1: 4 disponibles
-        s.asignarBicicletaAEstacion("BBB222", "Est2"); // Est2: 9 disponibles
-        s.asignarBicicletaAEstacion("CCC333", "Est2"); // Est2: 8 disponibles
-        s.asignarBicicletaAEstacion("DDD444", "Est2"); // Est2: 7 disponibles
-                // Est3: 3 disponibles
-                
-    }
+    // Asignar bicicletas a estaciones SIN entregar automáticamente a usuarios
+    Estacion est1 = s.getEstaciones().buscar("Est1");
+    Estacion est2 = s.getEstaciones().buscar("Est2");
+    Estacion est3 = s.getEstaciones().buscar("Est3");
 
-    @Test
-    public void test_OK() {
-        // Queremos estaciones con disponibilidad > 3
-        Retorno ret = s.estacionesConDisponibilidad(3);
+    est1.anclarBicicleta(s.getDeposito().buscar("AAA111"));
+    est2.anclarBicicleta(s.getDeposito().buscar("BBB222"));
+    est2.anclarBicicleta(s.getDeposito().buscar("CCC333"));
+    est2.anclarBicicleta(s.getDeposito().buscar("DDD444"));
+    // Est3 queda vacía
+}
 
-        assertEquals(Retorno.Resultado.OK, ret.getResultado());
+@Test
+public void testEstacionesConDisponibilidad() {
+    // Queremos estaciones con más de 2 bicis disponibles
+    retorno = s.estacionesConDisponibilidad(2);
 
-        // Est1 → 4 disponibles, Est2 → 7 disponibles, Est3 → 3 disponibles → cuenta 2
-        assertEquals(2, ret.getValorEntero());
-    }
+    // Debe retornar OK
+    assertEquals(Retorno.Resultado.OK, retorno.getResultado());
 
+    // Solo Est2 tiene >2 bicis disponibles → valorInt = 1
+    assertEquals(1, retorno.getValorEntero());
+}
+
+    
     @Test
     public void test_ERROR1_parametroInvalido() {
         // n <= 1 → ERROR1

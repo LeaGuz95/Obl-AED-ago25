@@ -70,16 +70,19 @@ public class ListaEstaciones {
         return sb.toString();
     }
 
+   // public NodoSE<Estacion> getPrimero() {
+      //  try {
+      //      return estaciones.obtener(0) != null 
+      //          ? new NodoSE<>(estaciones.obtener(0)) 
+     //           : null;
+      //  } catch (Exception e) {
+     //       return null;
+     //   }
+   // }
     public NodoSE<Estacion> getPrimero() {
-        try {
-            return estaciones.obtener(0) != null 
-                ? new NodoSE<>(estaciones.obtener(0)) 
-                : null;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    
+    return estaciones.getInicio(); // devuelve el primer nodo de ListaSE<Estacion>
+}
+
     public int longitud() {
     return estaciones.longitud();
     }

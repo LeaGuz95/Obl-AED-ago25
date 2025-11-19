@@ -81,12 +81,17 @@ public class Estacion implements Comparable<Estacion> {
     public ColaSE<Usuario> getEsperaAnclaje() {return esperaAnclaje;}
     public ColaSE<Bicicleta> getEsperaAnclajeBici() {return esperaAnclajeBicis;}
 
-   
-          public int cantidadDisponibles() {
+    
+  public int cantidadDisponibles() {
+  
     return anclajes.cantidadDisponibles();
 }
-
+      
 }
+
+    
+     
+
 
 
     

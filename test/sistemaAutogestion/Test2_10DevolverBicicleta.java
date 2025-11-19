@@ -101,7 +101,7 @@ public class Test2_10DevolverBicicleta {
         assertEquals(1, est1.cantidadDisponibles());
     }
 
-//ERROR
+
     @Test
     public void devolverBicicleta_OK_ConUsuarioEnEspera() {
         // Registrar usuarios con cédula válida
