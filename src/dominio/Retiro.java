@@ -10,15 +10,19 @@ package dominio;
  */
 
 
+import java.time.LocalDateTime;
+
 public class Retiro {
     private Bicicleta bicicleta;
     private Usuario usuario;
     private Estacion estacionOrigen;
+    private LocalDateTime fecha; 
 
     public Retiro(Bicicleta bicicleta, Usuario usuario, Estacion estacionOrigen) {
         this.bicicleta = bicicleta;
         this.usuario = usuario;
         this.estacionOrigen = estacionOrigen;
+        this.fecha = LocalDateTime.now(); // asigna la fecha y hora actual
     }
 
     // Getters
@@ -34,10 +38,15 @@ public class Retiro {
         return estacionOrigen;
     }
 
-    
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
     @Override
     public String toString() {
-        return bicicleta.getCodigo() + "#" + usuario.getCedula() + "#" + estacionOrigen.getNombre();
+        return bicicleta.getCodigo() + "#" + usuario.getCedula() + "#" 
+               + estacionOrigen.getNombre() + "#" + fecha;
     }
 }
+
 
