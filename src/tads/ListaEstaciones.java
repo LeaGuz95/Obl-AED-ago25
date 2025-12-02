@@ -87,7 +87,7 @@ public class ListaEstaciones {
     return estaciones.longitud();
     }
 
-    public Estacion obtener(int pos) throws Exception {
+    public Estacion obtener(int pos) {
        return estaciones.obtener(pos); // estaciones es ListaSE<Estacion>, así que esto devuelve Estacion
    }
 

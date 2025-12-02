@@ -34,7 +34,7 @@ public class Retiro {
         return estacionOrigen;
     }
 
-    // Opcional: toString para imprimir los retiros deshechos
+    
     @Override
     public String toString() {
         return bicicleta.getCodigo() + "#" + usuario.getCedula() + "#" + estacionOrigen.getNombre();

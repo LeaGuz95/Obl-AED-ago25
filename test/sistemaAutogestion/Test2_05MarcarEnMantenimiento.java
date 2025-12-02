@@ -87,5 +87,19 @@ public class Test2_05MarcarEnMantenimiento {
     }
     
      /* Nota: ERROR_3 “alquilada” no se prueba en primera entrega, ya que alquilar (2.9) no está requerido. */
+    
+        @Test
+     public void biciAlquiladaOK(){
+         s.registrarUsuario("12345678", "Ana");
+         s.registrarEstacion("Estacion01", "Centro", 1);
+         s.registrarBicicleta("M00001", "URBANA");
+         s.asignarBicicletaAEstacion("M00001", "Estacion01");
+         s.alquilarBicicleta("12345678", "Estacion01");
+        //System.out.println("Bici actual del usuario: " + s.getUsuarios().buscar("1234567").getBicicletaActual());
+
+         retorno = s.marcarEnMantenimiento("M00001", "Rueda pinchada");
+         assertEquals(Retorno.Resultado.ERROR_3, retorno.getResultado());
+     }
+   
 }
 

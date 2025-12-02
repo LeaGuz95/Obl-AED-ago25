@@ -136,7 +136,9 @@ public class Sistema implements IObligatorio {
             return Retorno.error1();
         }
 
-        Bicicleta bici = deposito.buscar(codigo);
+       // Bicicleta bici = deposito.buscar(codigo);
+         Bicicleta bici = buscarBici(codigo);
+       
         if (bici == null) {
             return Retorno.error2();
         }
@@ -671,7 +673,7 @@ public class Sistema implements IObligatorio {
 
 
 
-//3.8. Ranking por tipo de uso----------- //Se podia hacer mas facil pero me quede sin tiempo
+//3.8. Ranking por tipo de uso----------- 
    @Override
     public Retorno rankingTiposPorUso() {
         if (estaciones == null || deposito == null)
@@ -680,7 +682,7 @@ public class Sistema implements IObligatorio {
        
         ListaSE<TipoUso> usos = new ListaSE<>();
 
-        // TODAS LAS BICIS PAKA
+
         for (TipoBicicleta tipo : TipoBicicleta.values()) {
             usos.adicionar(new TipoUso(tipo));
         }
@@ -798,5 +800,82 @@ public Retorno usuarioMayor() {
     return Retorno.ok(mayor.getCedula());
 }
 
+//EXTRAAAAS------------------------------------------------------
+
+private Bicicleta buscarBici(String codigo) {
+
+    // depósito
+    Bicicleta b = deposito.buscar(codigo);
+    if (b != null) return b;
+
+    // estaciones
+    for (int i = 0; i < estaciones.longitud(); i++) {
+        Estacion e = estaciones.obtener(i);
+        Bicicleta x = e.buscarBicicleta(codigo);
+        if (x != null) return x;
+    }
+
+    // usuarios con bici alquilada
+    for (int i = 0; i < usuarios.longitud(); i++) {
+        Usuario u = usuarios.obtener(i);
+        if (u != null && u.getBicicletaActual() != null &&
+            u.getBicicletaActual().getCodigo().equals(codigo)) {
+            return u.getBicicletaActual();
+        }
+    }
+
+    return null;
+}
+
+
+private boolean biciAlquilada(String codigo) {
+    for (int i = 0; i < usuarios.longitud(); i++) {
+        Usuario u = usuarios.obtener(i);
+        if (u != null && u.getBicicletaActual() != null &&
+            u.getBicicletaActual().getCodigo().equals(codigo)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+private Estacion estacionDeBici(String codigo) {
+    for (int i = 0; i < estaciones.longitud(); i++) {
+        Estacion e = estaciones.obtener(i);
+        if (e.buscarBicicleta(codigo) != null) return e;
+    }
+    return null;
+}
+
+private void sacarDeDondeEste(Bicicleta bici) {
+    deposito.sacar(bici.getCodigo());
+
+    for (int i = 0; i < estaciones.longitud(); i++) {
+        estaciones.obtener(i).sacarBicicleta(bici.getCodigo());
+    }
+}
+
+
+private int disponiblesEn(Estacion e) {
+    return e.cantidadDisponibles();
+}
+
+private void revertirRetiro(Retiro r) {
+    Bicicleta b = r.getBicicleta();
+    Estacion est = r.getEstacionOrigen();
+    Usuario u = r.getUsuario();
+
+    u.setBicicletaActual(null);
+    b.setEstado(EstadoBicicleta.Disponible);
+
+    if (est.hayLugar())
+        est.anclarBicicleta(b);
+    else
+        est.getEsperaAnclajeBici().encolar(b);
+}
+
 
 }
+
+
+
