@@ -874,6 +874,127 @@ private void revertirRetiro(Retiro r) {
         est.getEsperaAnclajeBici().encolar(b);
 }
 
+public String listarAlquiladasPorRanking() {
+    ListaSE<Bicicleta> aux = new ListaSE<>();
+
+    for (int i = 0; i < deposito.getLista().longitud(); i++) {
+        try {
+            Bicicleta b = deposito.getLista().obtener(i);
+            if (b.getEstacionActual() == null) { // significa que está alquilada
+                aux.adicionar(b);
+            }
+        } catch (Exception e) {}
+    }
+
+    aux.bubbleSort((b1, b2) -> b2.getVecesAlquilada() - b1.getVecesAlquilada());
+
+    // Generar string similar a listarConEstado()
+    StringBuilder sb = new StringBuilder();
+    NodoSE<Bicicleta> nodo = aux.getInicio();
+    while (nodo != null) {
+        Bicicleta b = nodo.getDato();
+        if (sb.length() > 0) sb.append("|");
+        sb.append(b.getCodigo())
+          .append("#").append(b.getTipo())
+          .append("#").append(b.getVecesAlquilada());
+        nodo = nodo.getSiguiente();
+    }
+
+    return sb.toString();
+}
+
+
+public String listarAlquiladasPorBarrio(String barrio) {
+    ListaSE<Bicicleta> aux = new ListaSE<>();
+
+    for (int i = 0; i < deposito.getLista().longitud(); i++) {
+        try {
+            Bicicleta b = deposito.getLista().obtener(i);
+            if (b.getEstacionActual() != null &&
+                b.getEstacionActual().getBarrio().equalsIgnoreCase(barrio)) {
+                aux.adicionar(b);
+            }
+        } catch (Exception e) {}
+    }
+
+    aux.bubbleSort((b1, b2) -> b2.getVecesAlquilada() - b1.getVecesAlquilada());
+
+    // Generar string
+    StringBuilder sb = new StringBuilder();
+    NodoSE<Bicicleta> nodo = aux.getInicio();
+    while (nodo != null) {
+        Bicicleta b = nodo.getDato();
+        if (sb.length() > 0) sb.append("|");
+        sb.append(b.getCodigo())
+          .append("#").append(b.getTipo())
+          .append("#").append(b.getVecesAlquilada())
+          .append("#").append(b.getEstacionActual().getBarrio());
+        nodo = nodo.getSiguiente();
+    }
+
+    return sb.toString();
+}
+
+
+
+public String listarEstacionesPorDisponibilidad() {
+    ListaSE<Estacion> aux = estaciones.getLista();
+    aux.bubbleSort((e1, e2) -> e2.getAnclajes().cantidadDisponibles() - e1.getAnclajes().cantidadDisponibles());
+
+    StringBuilder sb = new StringBuilder();
+    NodoSE<Estacion> nodo = aux.getInicio();
+    while (nodo != null) {
+        Estacion est = nodo.getDato();
+        if (sb.length() > 0) sb.append("|");
+        sb.append(est.getNombre())
+          .append("#").append(est.getBarrio())
+          .append("#").append(est.getAnclajes().cantidadDisponibles());
+        nodo = nodo.getSiguiente();
+    }
+    return sb.toString();
+}
+
+
+
+public String historialPorUsuario(String usuarioCedula) {
+    ListaSE<Retiro> elementos = historialRetiros.obtenerElementos();
+    StringBuilder sb = new StringBuilder();
+
+    NodoSE<Retiro> nodo = elementos.getInicio();
+    while (nodo != null) {
+        Retiro r = nodo.getDato();
+        if (r != null && r.getUsuario() != null 
+            && r.getUsuario().getCedula().equals(usuarioCedula)) {
+
+            if (sb.length() > 0) sb.append("|");
+
+            String biciCodigo = (r.getBicicleta() != null) 
+                                ? r.getBicicleta().getCodigo() 
+                                : "SinBici";
+
+            sb.append(biciCodigo)
+              .append("#")
+              .append(r.getFecha());
+        }
+        nodo = nodo.getSiguiente();
+    }
+
+    return sb.toString();
+}
+
+
+public Bicicleta bicicletaMasUsada() {
+    Bicicleta top = null;
+    NodoSE<Bicicleta> nodo = deposito.getLista().getInicio();
+    while (nodo != null) {
+        Bicicleta b = nodo.getDato();
+        if (top == null || b.getVecesAlquilada() > top.getVecesAlquilada())
+            top = b;
+        nodo = nodo.getSiguiente();
+    }
+    return top;
+}
+
 
 }
 
