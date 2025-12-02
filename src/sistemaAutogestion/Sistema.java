@@ -610,7 +610,7 @@ public class Sistema implements IObligatorio {
         act = act.getSiguiente();
     }
 
-    return Retorno.ok(contador); // valorInt = cantidad de estaciones
+    return Retorno.ok(contador); 
 }
 
 
