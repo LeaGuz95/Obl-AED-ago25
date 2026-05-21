@@ -3,36 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test2_09AlquilarBicicleta.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/sistemaAutogestion/Sistema.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/dominio/Usuario.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test3_10UsuarioMayorCantidadAlquileres.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/tads/ListaUsuarios.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test2_10DevolverBicicleta.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test2_11DeshacerUltimosRetiros.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test3_05_ListarBicisDeEstacion.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test3_06_EstacionesConDisponibilidadMayor.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test3_07OcupacionPromedioBarrio.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test3_08RankingPorTipoUso.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test3_09UsuariosEsperaAlquiler.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/dominio/Bicicleta.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/dominio/Estacion.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/dominio/EstadoBicicleta.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/dominio/TipoUso.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/tads/PilaSE.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/tads/PilaRetiros.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/tads/NodoSE.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/tads/MatrizEstaciones.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/tads/ListaSE.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/tads/ListaEstaciones.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/tads/ListaBicicletas.java</file>
             <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/tads/ILista.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/tads/ColaSE.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/dominio/Retiro.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test3_04InformacionMapa.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test2_07EliminarEstacion.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test3_01ObtenerUsuario.java</file>
-            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/test/sistemaAutogestion/Test3_02ListarUsuarios.java</file>
+            <file>file:/C:/Users/ljgp2/Desktop/leandro/leandro/ORT/ORT/Semestre%203/Algoritmos/obligatorio/Obl-AED-ago25%20(1)/Obl-AED-ago25/src/tads/NodoSE.java</file>
         </group>
     </open-files>
 </project-private>
